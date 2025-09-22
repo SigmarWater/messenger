@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package messenger.auth.protobuf.api.auth_service; 
+
+option go_package = "messenger/auth/pkg/api/auth_service";
+
+import "google/protobuf/empty.proto";
+import "api/auth_service/auth_messages.proto"; 
+
+service UserAPI{
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Get(GetRequest) returns (GetResponse);
+    rpc Update(UpdateRequest) returns (google.protobuf.Empty);
+    rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+}

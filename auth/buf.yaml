@@ -1,0 +1,13 @@
+version: v2
+modules:
+  - path: messenger/auth/protobuf
+  #github.com/SigmarWater/gRPC/protobuf — это просто идентификатор, который логично соответствует структуре репозитория: github.com/SigmarWater/gRPC — репо, protobuf — папка с .proto.
+
+ # Buf будет понимать, что все .proto в этом модуле принадлежат именно этому пути, и это будет использоваться при линтинге, breaking changes и при построении зависимостей.
+  #- path: vendor.protobuf
+lint:
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE
