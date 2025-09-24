@@ -9,10 +9,13 @@ import (
 	"log"
 
 	"context"
-	"errors"
+	"fmt"
 
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -67,6 +70,24 @@ func (u *UserApiServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.
 		password_confirm: req.GetPasswordConfirm(),
 		role: req.GetRole().Enum().String(),
 	}
+
+	if user.password != user.password_confirm{
+		errorStatus := status.New(codes.InvalidArgument, "Invalid password_confirm")
+		ds, err := errorStatus.WithDetails(&errdetails.BadRequest{
+			FieldViolations: []*errdetails.BadRequest_FieldViolation{
+				{
+					Field: "Password",
+					Description: fmt.Sprint("Password and Password Confirm aren't equal"),
+				},
+			},
+		})
+
+		if err != nil{
+			return nil, errorStatus.Err()
+		}
+
+		return nil, ds.Err()
+	}
 	
 	UserApi.mutex.Lock()
 	UserApi.users[UserApi.id + 1] = user
@@ -87,12 +108,17 @@ func (u *UserApiServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetRes
 	UserApi.mutex.RUnlock()
 
 	if !ok{
-		return nil, errors.New("Now found")
+		errorStatus := status.New(codes.NotFound, 
+			fmt.Sprintf("User with id: %d is not exists", id))
+
+		return nil, errorStatus.Err()
 	}
 
 	role, ok := pb.Role_value[user.role]
+
 	if !ok{
-		return nil, errors.New("Нет такого значения роли")
+		errorStatus := status.New(codes.Internal, "Such role isn't exists")
+		return nil, errorStatus.Err()
 	}
 
 	log.Printf("Получаем user: %+#v\n", user)
@@ -117,8 +143,13 @@ func (u *UserApiServer) Update(ctx context.Context, req *pb.UpdateRequest) (*emp
 
 
 	u.mutex.RLock()
-	oldUser := UserApi.users[int(id)]
+	oldUser, ok := UserApi.users[int(id)]
 	u.mutex.RUnlock()
+
+	if !ok{
+		errorStatus := status.New(codes.NotFound, codes.NotFound.String())
+		return &emptypb.Empty{}, errorStatus.Err()
+	}
 
 	newUser := User{
 		name: user.name, 
@@ -134,7 +165,7 @@ func (u *UserApiServer) Update(ctx context.Context, req *pb.UpdateRequest) (*emp
 
 	UserApi.mutex.Unlock()
 
-	log.Printf("Обновленные данные user:%d: %+#v\n", id, user)
+	log.Printf("Обновленные данные user:%d: %+#v\n", id, newUser)
 
 	return &emptypb.Empty{}, nil
 }
