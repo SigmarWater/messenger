@@ -1,0 +1,16 @@
+syntax="proto3";
+
+package chat.protobuf.api.chat_service; 
+
+option go_package = "messenger/chat/pkg/api/chat_service";
+
+import "google/protobuf/empty.proto";
+import "api/chat_service/messages_chatServer.proto";
+import "google/protobuf/wrappers.proto";
+
+service ChatApi{
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+    rpc SendMessage(stream SendMessageRequest) returns (google.protobuf.StringValue);
+}
+

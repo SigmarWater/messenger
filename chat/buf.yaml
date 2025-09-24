@@ -1,6 +1,6 @@
 version: v2
 modules:
-  - path: messenger/auth/protobuf
+  - path: messenger/chat/protobuf
 lint:
   use:
     - STANDARD
