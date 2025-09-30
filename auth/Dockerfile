@@ -1,11 +1,11 @@
 FROM golang:1.25-alpine3.22  AS builder 
 WORKDIR /app 
-COPY go.mod go.sum ./
+COPY go.mod go.sum /app/
 RUN go mod download  
-COPY ./cmd/userApi/main.go . 
-RUN GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -o auth_service main.go 
+COPY . /app/ 
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o auth_service ./cmd/userApi/main.go 
 
 FROM alpine:3.22.1   
 WORKDIR /app
-COPY --from=builder app/auth_service ./
+COPY --from=builder /app/auth_service /app/
 CMD ["./auth_service"] 
