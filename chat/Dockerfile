@@ -1,6 +1,6 @@
 FROM golang:1.25-alpine3.22 AS builder 
 WORKDIR /app 
-COPY ../go.mod ../go.sum /app/ 
+COPY go.mod go.sum /app/ 
 RUN go mod download  
 COPY ./cmd/chat_server/main.go /app/ 
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o chat_server ./main.go 
