@@ -1,0 +1,25 @@
+name: CI2 
+
+run-name: CI2
+
+on:
+    push:
+      branches: [main, master]
+    pull_request:
+      branches: [main, master]
+
+jobs: 
+    enter-in-vps:
+        runs-on: ubuntu-latest 
+        steps:
+            - name: Entry 
+              uses: appleboy/ssh-action@v1.2.0
+              with: 
+                host: ${{secrets.HOST}}
+                port: 22 
+                username: ${{secrets.VPS_USERNAME}}
+                password: ${{secrets.VPS_PASSWORD}} 
+                script: | 
+                   git clone https://github.com/SigmarWater/messenger.git messenger-with-containers
+                   docker compose down 
+                   docker compose up -d 

@@ -1,10 +1,6 @@
 name: CI 
 
-on: 
-    push:
-      branches: [main, master]
-    pull_request:
-        branches: [main, master]
+on: workflow_dispatch
 
 run-name: CI 
 
@@ -57,3 +53,4 @@ jobs:
                     docker run -d -p 8105:8083 --name=auth ${{vars.DOCKERHUB_USERNAME}}/auth_service:latest 
                     docker run -d -p 8106:8085 --name=chat ${{vars.DOCKERHUB_USERNAME}}/chat_service:latest
               
+ 
