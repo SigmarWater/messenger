@@ -3,7 +3,7 @@
 create table note(
     id serial primary key,
     title text not null,
-    body test not null,
+    body text not null,
     create_at timestamp not null default now(),
     update_at timestamp
 );
