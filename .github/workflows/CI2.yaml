@@ -25,4 +25,4 @@ jobs:
                    git clone https://github.com/SigmarWater/messenger.git messenger-with-containers
                    cd messenger-with-containers
                    docker compose down 
-                   docker compose --env-file ./postgres/.env up -d 
+                   docker compose --env-file ./postgres/migrations/.env up -d 
