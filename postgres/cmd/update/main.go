@@ -26,7 +26,8 @@ func main(){
 		return
 	}
 
-	builderUpdate := sq.Update("users"). 
+	builderUpdate := sq.Update("users").
+	PlaceholderFormat(sq.Dollar). 
 	Set("name", "Artem").
 	Set("email", "artemudalcov05@gmail.com").
 	Set("role", "admin").
@@ -37,6 +38,9 @@ func main(){
 		log.Println(err)
 		return 
 	}
+
+	log.Println("query:", query)
+	log.Println("args:", args)
 
 	res, err := pool.Exec(ctx, query, args...)
 
