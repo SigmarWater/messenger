@@ -8,7 +8,7 @@ create table messages(
     time_at timestamp default now(),
 
     foreign key (from_user) references users(id) on delete cascade,
-    foreign key (id_chat) references chat(id_chat) on delete cascade
+    foreign key (id_chat) references chats(id_chat) on delete cascade
 );
 -- +goose StatementEnd
 
