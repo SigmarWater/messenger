@@ -20,7 +20,3 @@ generate: .buf-generate .tidy
 
 .PHONY: .bin-deps .buf-generate generate
 
-.container:
-	docker build . -t cr.selcloud.ru/sigmarwater/auth_service:v1.0.0 
-	docker login -u token -p CRgAAAAAs8oolBbKMxzpd6BqN9crcwyUrxSpVTas cr.selcloud.ru/sigmarwater
-	docker push cr.selcloud.ru/sigmarwater/auth_service:v1.0.0
