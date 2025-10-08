@@ -1,0 +1,66 @@
+package users
+
+import (
+	"context"
+	"log"
+
+	sq "github.com/Masterminds/squirrel"
+	"github.com/SigmarWater/messenger/auth/intenal/model"
+	"github.com/SigmarWater/messenger/auth/intenal/repository/converter"
+	modelRepo "github.com/SigmarWater/messenger/auth/intenal/repository/users/model"
+	"github.com/jackc/pgx/v4/pgxpool"
+)
+
+type PostgresUserRepository struct {
+	pool *pgxpool.Pool
+}
+
+func NewPostgresUserRepository(pool *pgxpool.Pool) *PostgresUserRepository {
+	return &PostgresUserRepository{pool: pool}
+}
+
+func (r *PostgresUserRepository) InsertUser(ctx context.Context, user *model.UserService) (int, error) {
+	builderInsert := sq.Insert("users").
+		PlaceholderFormat(sq.Dollar).
+		Columns("name", "email", "password", "role", "create_at").
+		Values(user.Name, user.Email, user.EnterPassword, user.Role, user.CreateAt).
+		Suffix("RETURNING id")
+
+	query, args, err := builderInsert.ToSql()
+	if err != nil {
+		log.Printf("Ошибка при создании запроса insert: %v\n", err)
+		return 0, err
+	}
+
+	var id int
+	if err := r.pool.QueryRow(ctx, query, args...).Scan(&id); err != nil {
+		log.Printf("Ошибка в запросе insert к таблице users: %v\n", err)
+		return 0, err
+	}
+
+	log.Printf("Добавлена запись с id в таблицу users: %d\n", id)
+	return id, nil
+}
+
+func (r *PostgresUserRepository) GetUser(ctx context.Context, id int) (*model.UserService, error) {
+	builderSelect := sq.Select("name", "email", "role", "create_at", "update_at").
+		PlaceholderFormat(sq.Dollar).
+		From("users").
+		Where(sq.Eq{"id": id})
+
+	query, args, err := builderSelect.ToSql()
+	if err != nil {
+		log.Printf("Ошибка при создании запроса select: %v\n", err)
+		return nil, err
+	}
+
+	var userRep modelRepo.UserRepository
+
+	if err := r.pool.QueryRow(ctx, query, args...).Scan(&userRep.Name, &userRep.Email, &userRep.Role,
+		&userRep.CreateAt, &userRep.UpdateAt); err != nil {
+		log.Printf("Ошибка в запросе select: %v\n", err)
+		return nil, err
+	}
+
+	return converter.ToUserFromRepo(userRep), nil
+}
