@@ -7,11 +7,12 @@ option go_package = "messenger/chat/pkg/api/chat_service";
 import "google/protobuf/timestamp.proto";
 
 message CreateRequest{
-    repeated string usernames = 1;
+    string chatName = 1;
 };
 
 message CreateResponse{
     int64 id = 1;
+    string chatName = 2;
 };
 
 message DeleteRequest{
@@ -20,6 +21,20 @@ message DeleteRequest{
 
 message SendMessageRequest{
     int64 chatID = 1;
+    string from = 2;
+    string text = 3;
+};
+
+message SendMessageResponse{
+    int64 messageID = 1;
+};
+
+message GetMessageRequest{
+    int64 id = 1;
+};
+
+message GetMessageResponse{
+    string chatName = 1;
     string from = 2;
     string text = 3;
     google.protobuf.Timestamp timestamp = 4;

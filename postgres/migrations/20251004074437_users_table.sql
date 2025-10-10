@@ -6,8 +6,10 @@ create table users(
     id serial primary key,
     name text not null,
     email text not null unique,
-    password_hash TEXT not null,
-    role user_role not null default 'user' 
+    password TEXT not null,
+    role user_role not null default 'user',
+    create_at timestamp default now(),
+    update_at timestamp
 );
 -- +goose StatementEnd
 
