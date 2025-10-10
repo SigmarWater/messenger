@@ -12,7 +12,6 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,6 +23,7 @@ const (
 	ChatApi_Create_FullMethodName      = "/chat.protobuf.api.chat_service.ChatApi/Create"
 	ChatApi_Delete_FullMethodName      = "/chat.protobuf.api.chat_service.ChatApi/Delete"
 	ChatApi_SendMessage_FullMethodName = "/chat.protobuf.api.chat_service.ChatApi/SendMessage"
+	ChatApi_GetMessage_FullMethodName  = "/chat.protobuf.api.chat_service.ChatApi/GetMessage"
 )
 
 // ChatApiClient is the client API for ChatApi service.
@@ -32,7 +32,8 @@ const (
 type ChatApiClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	SendMessage(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[SendMessageRequest, wrapperspb.StringValue], error)
+	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
+	GetMessage(ctx context.Context, in *GetMessageRequest, opts ...grpc.CallOption) (*GetMessageResponse, error)
 }
 
 type chatApiClient struct {
@@ -63,18 +64,25 @@ func (c *chatApiClient) Delete(ctx context.Context, in *DeleteRequest, opts ...g
 	return out, nil
 }
 
-func (c *chatApiClient) SendMessage(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[SendMessageRequest, wrapperspb.StringValue], error) {
+func (c *chatApiClient) SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &ChatApi_ServiceDesc.Streams[0], ChatApi_SendMessage_FullMethodName, cOpts...)
+	out := new(SendMessageResponse)
+	err := c.cc.Invoke(ctx, ChatApi_SendMessage_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[SendMessageRequest, wrapperspb.StringValue]{ClientStream: stream}
-	return x, nil
+	return out, nil
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type ChatApi_SendMessageClient = grpc.ClientStreamingClient[SendMessageRequest, wrapperspb.StringValue]
+func (c *chatApiClient) GetMessage(ctx context.Context, in *GetMessageRequest, opts ...grpc.CallOption) (*GetMessageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMessageResponse)
+	err := c.cc.Invoke(ctx, ChatApi_GetMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 // ChatApiServer is the server API for ChatApi service.
 // All implementations must embed UnimplementedChatApiServer
@@ -82,7 +90,8 @@ type ChatApi_SendMessageClient = grpc.ClientStreamingClient[SendMessageRequest, 
 type ChatApiServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error)
-	SendMessage(grpc.ClientStreamingServer[SendMessageRequest, wrapperspb.StringValue]) error
+	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
+	GetMessage(context.Context, *GetMessageRequest) (*GetMessageResponse, error)
 	mustEmbedUnimplementedChatApiServer()
 }
 
@@ -99,8 +108,11 @@ func (UnimplementedChatApiServer) Create(context.Context, *CreateRequest) (*Crea
 func (UnimplementedChatApiServer) Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedChatApiServer) SendMessage(grpc.ClientStreamingServer[SendMessageRequest, wrapperspb.StringValue]) error {
-	return status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+func (UnimplementedChatApiServer) SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
+}
+func (UnimplementedChatApiServer) GetMessage(context.Context, *GetMessageRequest) (*GetMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMessage not implemented")
 }
 func (UnimplementedChatApiServer) mustEmbedUnimplementedChatApiServer() {}
 func (UnimplementedChatApiServer) testEmbeddedByValue()                 {}
@@ -159,12 +171,41 @@ func _ChatApi_Delete_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatApi_SendMessage_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ChatApiServer).SendMessage(&grpc.GenericServerStream[SendMessageRequest, wrapperspb.StringValue]{ServerStream: stream})
+func _ChatApi_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatApiServer).SendMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatApi_SendMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatApiServer).SendMessage(ctx, req.(*SendMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type ChatApi_SendMessageServer = grpc.ClientStreamingServer[SendMessageRequest, wrapperspb.StringValue]
+func _ChatApi_GetMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatApiServer).GetMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ChatApi_GetMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatApiServer).GetMessage(ctx, req.(*GetMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 // ChatApi_ServiceDesc is the grpc.ServiceDesc for ChatApi service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -181,13 +222,15 @@ var ChatApi_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Delete",
 			Handler:    _ChatApi_Delete_Handler,
 		},
-	},
-	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "SendMessage",
-			Handler:       _ChatApi_SendMessage_Handler,
-			ClientStreams: true,
+			MethodName: "SendMessage",
+			Handler:    _ChatApi_SendMessage_Handler,
+		},
+		{
+			MethodName: "GetMessage",
+			Handler:    _ChatApi_GetMessage_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "api/chat_service/service_chatServer.proto",
 }

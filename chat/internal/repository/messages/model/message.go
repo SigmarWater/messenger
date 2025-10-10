@@ -5,8 +5,10 @@ import (
 )
 
 type MessageRepository struct{
-	Id_chat int
-	From_user string
-	Text_message string 
-	Time_at sql.NullTime 
+	IdMessage int
+	IdChat int
+	ChatName string
+	FromUser string
+	TextMessage string 
+	TimeAt sql.NullTime 
 }

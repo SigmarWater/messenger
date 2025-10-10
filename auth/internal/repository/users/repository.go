@@ -5,9 +5,9 @@ import (
 	"log"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/SigmarWater/messenger/auth/intenal/model"
-	"github.com/SigmarWater/messenger/auth/intenal/repository/converter"
-	modelRepo "github.com/SigmarWater/messenger/auth/intenal/repository/users/model"
+	"github.com/SigmarWater/messenger/auth/internal/model"
+	"github.com/SigmarWater/messenger/auth/internal/repository/converter"
+	modelRepo "github.com/SigmarWater/messenger/auth/internal/repository/users/model"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 

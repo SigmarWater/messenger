@@ -6,42 +6,40 @@ import(
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
-	rpModel "github.com/SigmarWater/messenger/chat/internal/repository/chats/model"
+	"github.com/SigmarWater/messenger/chat/internal/repository/chats/converter"
+	repoModel "github.com/SigmarWater/messenger/chat/internal/repository/chats/model"
 )
 
-const dbDNS = "host=84.22.148.185 port=50000 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
+type PostgresChatRepository struct {
+	pool *pgxpool.Pool
+}
 
-func GetInfoChat(ctx context.Context, id_chat int) (*model.ChatService, error){
-	pool, err := pgxpool.Connect(ctx, dbDNS)
-	if err != nil{
-		log.Printf("Ошибка соединение: %v\n", err)
-		return nil, err
-	}
+func NewPostgresChatRepository(pool *pgxpool.Pool) *PostgresChatRepository {
+	return &PostgresChatRepository{pool:pool}
+}
 
-	if err := pool.Ping(ctx); err != nil{
-		log.Printf("Ошибка подключения: %v\n", err)
-		return nil, err
-	}
 
-	
-	builderSelect := sq.Select("chat_name").
-	From("chats").
+// DeleteChat(ctx context.Context, idChat int)
+
+func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model.ChatService)(*model.ChatService, error){
+	builderInsert := sq.Insert("chats").
 	PlaceholderFormat(sq.Dollar).
-	Where(sq.Eq{"id_message":id_chat})
+	Columns("chat_name").
+	Values(chatInfo.ChatName).
+	Suffix("RETURNING id_chat, chat_name")
 
-	query, args, err := builderSelect.ToSql()
-
+	query, args, err := builderInsert.ToSql()
 	if err != nil{
-		log.Printf("Ошибка при создании запроса select: %v\n", err)
+		log.Printf("Ошибка при создании запроса в CreateChat: %v\n", err)
 		return nil, err
 	}
 
-	var chat *rpModel.ChatRepository
-	err = pool.QueryRow(ctx, query, args).Scan(chat.ChatName)
+	var chatRep repoModel.ChatRepository
+	err = p.pool.QueryRow(ctx, query, args).Scan(&chatRep.IdChat, &chatRep.ChatName)
 	if err != nil{
-		log.Printf("Ошибка в запросе select: %v\n", err)
+		log.Printf("Ошибка выполнения запроса в CreateChat: %v\n", err)
 		return nil, err
 	}
 
-	return 
+	return converter.MsgRepoToService(chatRep), nil
 }

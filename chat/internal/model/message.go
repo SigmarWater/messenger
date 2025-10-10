@@ -5,8 +5,10 @@ import(
 )
 
 type MessageService struct{
-	ChatId string;
-	From_user int;
-	Text_message string;
-	Time_at time.Time 
+	IdMessage int
+	ChatId int
+	ChatName string
+	FromUser string
+	TextMessage string
+	TimeAt time.Time 
 }

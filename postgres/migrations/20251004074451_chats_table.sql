@@ -8,5 +8,5 @@ create table chats(
 
 -- +goose Down
 -- +goose StatementBegin
-drop table note;
+drop table if exists chats;
 -- +goose StatementEnd

@@ -2,121 +2,146 @@ package main
 
 import (
 	"net"
-	"sync"
-
+	"github.com/SigmarWater/messenger/auth/internal/repository/users"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
+	"github.com/jackc/pgx/v4/pgxpool"
 
 	"log"
 
 	"context"
 	"fmt"
 
+	convFromClient "github.com/SigmarWater/messenger/auth/internal/converter"
+	"github.com/SigmarWater/messenger/auth/internal/repository"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type User struct{
-	name string 
-	email string 
-	password string 
-	password_confirm string 
-	role string 
+type User struct {
+	name             string
+	email            string
+	password         string
+	password_confirm string
+	role             string
 }
 
-type UserApiServer struct{
-	id int
-	users map[int]User 
-	mutex sync.RWMutex
+type UserApiServer struct {
+	repUsers repository.UserRepository
 	pb.UnimplementedUserAPIServer
 }
 
-func NewUserApiServer () *UserApiServer{
-	return &UserApiServer{users: make(map[int]User)}
+const dbDNS string = "host=84.22.148.185 port=50000 user=sigmarwater password=sigmarwater dbname=users sslmode=disable"
+
+func InitRepository(ctx context.Context, dns string) *pgxpool.Pool {
+	pool, err := pgxpool.Connect(ctx, dns)
+	if err != nil {
+		log.Printf("Ошибка соединения с БД(users): %v\n", err)
+		return nil
+	}
+
+	if err := pool.Ping(ctx); err != nil {
+		log.Printf("Ошибка при проверке соединения с БД(users): %v\n", err)
+		return nil
+	}
+	return pool
 }
 
-var UserApi = NewUserApiServer()
+func NewUserApiServer() *UserApiServer {
+	pool := InitRepository(context.Background(), dbDNS)
+	if pool == nil {
+		return nil
+	}
+	return &UserApiServer{repUsers: users.NewPostgresUserRepository(pool)}
+}
 
-func main(){
+func main() {
 	server := grpc.NewServer()
 
 	lis, err := net.Listen("tcp", ":8083")
-	if err != nil{
+	if err != nil {
 		log.Printf("Ошибка соединения: %v\n", err)
-		return 
+		return
 	}
 
-	pb.RegisterUserAPIServer(server, UserApi)
-	
+	pb.RegisterUserAPIServer(server, NewUserApiServer())
+
 	reflection.Register(server)
 
 	log.Println("Запускаем сервер")
 
-	if err := server.Serve(lis); err != nil{
+	if err := server.Serve(lis); err != nil {
 		log.Printf("Ошибка при прослушивании порта: %v\n", err)
 		return
 	}
 }
 
-func (u *UserApiServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error){
-	
+func (u *UserApiServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	user := User{
-		name: req.GetName(), 
-		email: req.GetEmail(),
-		password: req.GetPassword(),
+		name:             req.GetName(),
+		email:            req.GetEmail(),
+		password:         req.GetPassword(),
 		password_confirm: req.GetPasswordConfirm(),
-		role: req.GetRole().Enum().String(),
+		role:             req.GetRole().Enum().String(),
 	}
 
-	if user.password != user.password_confirm{
+	if user.password != user.password_confirm {
 		errorStatus := status.New(codes.InvalidArgument, "Invalid password_confirm")
 		ds, err := errorStatus.WithDetails(&errdetails.BadRequest{
 			FieldViolations: []*errdetails.BadRequest_FieldViolation{
 				{
-					Field: "Password",
+					Field:       "Password",
 					Description: fmt.Sprint("Password and Password Confirm aren't equal"),
 				},
 			},
 		})
 
-		if err != nil{
+		if err != nil {
 			return nil, errorStatus.Err()
 		}
 
 		return nil, ds.Err()
 	}
+
+	id, err := u.repUsers.InsertUser(ctx, convFromClient.ToUserFromDescCreate(req))
 	
-	UserApi.mutex.Lock()
-	UserApi.users[UserApi.id + 1] = user
-	UserApi.mutex.Unlock()
-
-	UserApi.id++
-	
-	log.Printf("Created user: %+#v\n", user)
-
-	return &pb.CreateResponse{Id:int64(UserApi.id)}, nil
-}
-
-func (u *UserApiServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error){
-	id := req.GetId()
-
-	UserApi.mutex.RLock()
-	user, ok := UserApi.users[int(id)]
-	UserApi.mutex.RUnlock()
-
-	if !ok{
-		errorStatus := status.New(codes.NotFound, 
-			fmt.Sprintf("User with id: %d is not exists", id))
-
-		return nil, errorStatus.Err()
+	if err != nil{
+		log.Printf("Ошибка при добавлении user: %v\n", err)
+		return nil, err
 	}
 
-	role, ok := pb.Role_value[user.role]
+	log.Printf("Created user with id: %+#v\n", id)
 
-	if !ok{
+	return &pb.CreateResponse{Id: int64(id)}, nil
+}
+
+func (u *UserApiServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
+	user, err := u.repUsers.GetUser(ctx, int(req.GetId()))
+	
+	if err != nil{
+		return nil, err
+	}
+
+	switch user.Role{
+	case "user":
+		 user.Role = "ROLE_USER"
+	default:
+		user.Role = "ROLE_ADMIN"
+	}
+
+	// if !ok {
+	// 	errorStatus := status.New(codes.NotFound,
+	// 		fmt.Sprintf("User with id: %d is not exists", id))
+
+	// 	return nil, errorStatus.Err()
+	// }
+
+	role, ok := pb.Role_value[user.Role]
+
+	if !ok {
 		errorStatus := status.New(codes.Internal, "Such role isn't exists")
 		return nil, errorStatus.Err()
 	}
@@ -124,54 +149,54 @@ func (u *UserApiServer) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetRes
 	log.Printf("Получаем user: %+#v\n", user)
 
 	resp := &pb.GetResponse{
-		Id: id, 
-		Name: user.name,
-		Email: user.email,
-		Role: pb.Role(role),
+		Name:  user.Name,
+		Email: user.Email,
+		Role:  pb.Role(role),
+		CreateAt: timestamppb.New(user.CreateAt),
+		UpdateAt: timestamppb.New(user.UpdateAt),
 	}
 
-	return resp, nil  
+	return resp, nil
 }
 
-func (u *UserApiServer) Update(ctx context.Context, req *pb.UpdateRequest) (*emptypb.Empty, error){
-	id := req.GetId()
+// func (u *UserApiServer) Update(ctx context.Context, req *pb.UpdateRequest) (*emptypb.Empty, error){
+// 	id := req.GetId()
 
-	user := User{
-		name: req.GetName().Value,
-		email: req.GetEmail().Value,
-	}
+// 	user := User{
+// 		name: req.GetName().Value,
+// 		email: req.GetEmail().Value,
+// 	}
 
+// 	u.mutex.RLock()
+// 	oldUser, ok := UserApi.users[int(id)]
+// 	u.mutex.RUnlock()
 
-	u.mutex.RLock()
-	oldUser, ok := UserApi.users[int(id)]
-	u.mutex.RUnlock()
+// 	if !ok{
+// 		errorStatus := status.New(codes.NotFound, codes.NotFound.String())
+// 		return &emptypb.Empty{}, errorStatus.Err()
+// 	}
 
-	if !ok{
-		errorStatus := status.New(codes.NotFound, codes.NotFound.String())
-		return &emptypb.Empty{}, errorStatus.Err()
-	}
+// 	newUser := User{
+// 		name: user.name,
+// 		email: user.email,
+// 		password: oldUser.password,
+// 		password_confirm: oldUser.password_confirm,
+// 		role: oldUser.role,
+// 	}
 
-	newUser := User{
-		name: user.name, 
-		email: user.email, 
-		password: oldUser.password,
-		password_confirm: oldUser.password_confirm,
-		role: oldUser.role,
-	}
+// 	UserApi.mutex.Lock()
 
-	UserApi.mutex.Lock()
+// 	UserApi.users[int(id)] = newUser
 
-	UserApi.users[int(id)] = newUser
+// 	UserApi.mutex.Unlock()
 
-	UserApi.mutex.Unlock()
+// 	log.Printf("Обновленные данные user:%d: %+#v\n", id, newUser)
 
-	log.Printf("Обновленные данные user:%d: %+#v\n", id, newUser)
+// 	return &emptypb.Empty{}, nil
+// }
 
-	return &emptypb.Empty{}, nil
-}
-
-func (u *UserApiServer) Delete(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error){
-	id := req.GetId()
-	delete(UserApi.users, int(id)) 
-	return &emptypb.Empty{}, nil
-}
+// func (u *UserApiServer) Delete(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error){
+// 	id := req.GetId()
+// 	delete(UserApi.users, int(id))
+// 	return &emptypb.Empty{}, nil
+// }

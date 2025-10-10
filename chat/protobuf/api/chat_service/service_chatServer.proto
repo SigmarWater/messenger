@@ -11,6 +11,7 @@ import "google/protobuf/wrappers.proto";
 service ChatApi{
     rpc Create(CreateRequest) returns (CreateResponse);
     rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
-    rpc SendMessage(stream SendMessageRequest) returns (google.protobuf.StringValue);
+    rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+    rpc GetMessage(GetMessageRequest) returns (GetMessageResponse);
 }
 

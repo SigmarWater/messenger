@@ -7,9 +7,11 @@ import (
 
 func ToMessageFromRepo(msg *rpModel.MessageRepository) *model.MessageService{
 	return &model.MessageService{
-		ChatId: msg.Id_chat,
-		From_user: msg.From_user,
-		Text_message: msg.Text_message,
-		Time_at: msg.Time_at,
+		IdMessage: msg.IdMessage,
+		ChatId: msg.IdChat,
+		ChatName: msg.ChatName,
+		FromUser: msg.FromUser,
+		TextMessage: msg.TextMessage,
+		TimeAt: msg.TimeAt.Time,
 	}
 }

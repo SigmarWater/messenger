@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/protobuf/types/known/wrapperspb"
+	//"google.golang.org/protobuf/types/known/wrapperspb"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	"time"
 
 )
-
 
 func main(){
 	conn, err := grpc.NewClient(":8083", 
@@ -34,8 +34,10 @@ func main(){
 		Role: pb.Role_ROLE_ADMIN,
 	}
 
-	
-	resCreate, err := client.Create(context.Background(), &user)
+	ctx, cancel := context.WithTimeout(context.Background(), 2 * time.Second)
+	defer cancel()
+
+	resCreate, err := client.Create(ctx, &user)
 
 	if err != nil{
 		switch status.Code(err){
@@ -64,7 +66,7 @@ func main(){
 	
 	log.Printf("Res : %v\n", resCreate)
 
-	resGet, err := client.Get(context.Background(), &pb.GetRequest{Id: 1})
+	resGet, err := client.Get(ctx, &pb.GetRequest{Id: 1})
 
 	if err != nil{
 		switch status.Code(err){
@@ -96,72 +98,72 @@ func main(){
 
 	log.Printf("Res Get: %v\n", resGet)
 
-	newUser := pb.UpdateRequest{
-		Id: 1, 
-		Name: &wrapperspb.StringValue{Value:"SigmarWater"},
-		Email: &wrapperspb.StringValue{Value:"sigmarwaterofficial.com"},
-	}
-	resUpdate, err := client.Update(context.Background(), &newUser)
+	// newUser := pb.UpdateRequest{
+	// 	Id: 1, 
+	// 	Name: &wrapperspb.StringValue{Value:"SigmarWater"},
+	// 	Email: &wrapperspb.StringValue{Value:"sigmarwaterofficial.com"},
+	// }
+	// resUpdate, err := client.Update(context.Background(), &newUser)
 
-	if err != nil{
-		switch status.Code(err){
-		case codes.NotFound:
-			log.Println("Not found user")
-		default:
-			log.Printf("Error: %v\n", err)
-		}
+	// if err != nil{
+	// 	switch status.Code(err){
+	// 	case codes.NotFound:
+	// 		log.Println("Not found user")
+	// 	default:
+	// 		log.Printf("Error: %v\n", err)
+	// 	}
 
-		if st, ok := status.FromError(err); ok{
-			log.Printf("code: %v, message: %v\n", 
-			st.Code(), st.Message())
+	// 	if st, ok := status.FromError(err); ok{
+	// 		log.Printf("code: %v, message: %v\n", 
+	// 		st.Code(), st.Message())
 
-			for _, d := range st.Details(){
-				switch d.(type){
-				case *errdetails.BadRequest_FieldViolation:
-					log.Printf("details: %v\n", d)
-				default:
-					log.Printf("details: %v\n", d)
-				}
-			}
-		}else{
-			log.Println("not grpc")
-		}
+	// 		for _, d := range st.Details(){
+	// 			switch d.(type){
+	// 			case *errdetails.BadRequest_FieldViolation:
+	// 				log.Printf("details: %v\n", d)
+	// 			default:
+	// 				log.Printf("details: %v\n", d)
+	// 			}
+	// 		}
+	// 	}else{
+	// 		log.Println("not grpc")
+	// 	}
 
-		return 
-	}
+	// 	return 
+	// }
 
-	log.Printf("Res Update: %v\n", resUpdate)
+	// log.Printf("Res Update: %v\n", resUpdate)
 
-	resGet2, err := client.Get(context.Background(), &pb.GetRequest{Id: 1})
+	// resGet2, err := client.Get(context.Background(), &pb.GetRequest{Id: 1})
 
-	if err != nil{
-		switch status.Code(err){
-		case codes.NotFound:
-			log.Println("Not found user") 
-		case codes.Internal:
-			log.Println("Ошибка внутри сервера")
-		default:
-			log.Printf("Error: %v\n", err)
-		}
+	// if err != nil{
+	// 	switch status.Code(err){
+	// 	case codes.NotFound:
+	// 		log.Println("Not found user") 
+	// 	case codes.Internal:
+	// 		log.Println("Ошибка внутри сервера")
+	// 	default:
+	// 		log.Printf("Error: %v\n", err)
+	// 	}
 
-		if st, ok := status.FromError(err); ok{
-			log.Printf("code: %v, message: %v\n", 
-			st.Code(), st.Message())
+	// 	if st, ok := status.FromError(err); ok{
+	// 		log.Printf("code: %v, message: %v\n", 
+	// 		st.Code(), st.Message())
 
-			for _, d := range st.Details(){
-				switch d.(type){
-				case *errdetails.BadRequest_FieldViolation:
-					log.Printf("details: %v\n", d)
-				default:
-					log.Printf("details: %v\n", d)
-				}
-			}
-		}else{
-			log.Println("not grpc")
-		}
-		return
-	}
+	// 		for _, d := range st.Details(){
+	// 			switch d.(type){
+	// 			case *errdetails.BadRequest_FieldViolation:
+	// 				log.Printf("details: %v\n", d)
+	// 			default:
+	// 				log.Printf("details: %v\n", d)
+	// 			}
+	// 		}
+	// 	}else{
+	// 		log.Println("not grpc")
+	// 	}
+	// 	return
+	// }
 
-	log.Printf("Res Get2: %v\n", resGet2)
+	// log.Printf("Res Get2: %v\n", resGet2)
 
 }

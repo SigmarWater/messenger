@@ -3,13 +3,13 @@ package converter
 import (
 	"time"
 
-	"github.com/SigmarWater/messenger/auth/intenal/model"
+	"github.com/SigmarWater/messenger/auth/internal/model"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func roleToString(role pb.Role) string{
-	switch role{
+func roleToString(role pb.Role) string {
+	switch role {
 	case pb.Role_ROLE_USER:
 		return "user"
 	case pb.Role_ROLE_ADMIN:
@@ -19,10 +19,10 @@ func roleToString(role pb.Role) string{
 	}
 }
 
-func stringToRole(role string) pb.Role{
-	switch role{
+func stringToRole(role string) pb.Role {
+	switch role {
 	case "user":
-		return pb.Role_ROLE_USER 
+		return pb.Role_ROLE_USER
 	case "admin":
 		return pb.Role_ROLE_ADMIN
 	default:
@@ -30,25 +30,22 @@ func stringToRole(role string) pb.Role{
 	}
 }
 
-
-func ToUserFromDescCreate(req pb.CreateRequest) *model.UserService{
+func ToUserFromDescCreate(req *pb.CreateRequest) *model.UserService {
 	return &model.UserService{
-		Name: req.GetName(),
-		Email: req.GetEmail(),
+		Name:          req.GetName(),
+		Email:         req.GetEmail(),
 		EnterPassword: req.GetPassword(),
-		Role: roleToString(req.GetRole()),
-		CreateAt: time.Now(),
+		Role:          roleToString(req.GetRole()),
+		CreateAt:      time.Now(),
 	}
 }
 
-
-func ToDescFromUser(user model.UserService) *pb.GetResponse{
+func ToDescFromUser(user model.UserService) *pb.GetResponse {
 	return &pb.GetResponse{
-		Name: user.Name,
-		Email: user.Email,
-		Role: stringToRole(user.Role),
+		Name:     user.Name,
+		Email:    user.Email,
+		Role:     stringToRole(user.Role),
 		CreateAt: timestamppb.New(user.CreateAt),
 		UpdateAt: timestamppb.New(user.UpdateAt),
 	}
 }
-

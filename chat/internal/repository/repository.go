@@ -13,5 +13,6 @@ type MessageRepository interface{
 
 
 type ChatRepository interface{
-	GetInfoChat(ctx context.Context, id_chat int) (*model.ChatService, error)
+	CreateChat(ctx context.Context, chatInfo *model.ChatService) (*model.ChatService, error)
+	DeleteChat(ctx context.Context, idChat int)
 }
