@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-	sq "github.com/Masterminds/squirrel"
 	"github.com/SigmarWater/messenger/chat/internal/model"
 	"github.com/SigmarWater/messenger/chat/internal/repository/chats/converter"
 	repoModel "github.com/SigmarWater/messenger/chat/internal/repository/chats/model"
@@ -41,16 +40,17 @@ func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model
 }
 
 func (p *PostgresChatRepository) DeleteChat(ctx context.Context, idChat int64) error {
-	builderDelete := sq.Delete("chats").PlaceholderFormat(sq.Dollar).Where(sq.Eq{"id_chat": idChat})
+	log.Printf("DEBUG: idChat = %d (type: %T)", idChat, idChat)
 
-	query, args, err := builderDelete.ToSql()
-	if err != nil {
-		log.Printf("Ошибка в DeleteChat (repository): %v\n", err)
-		return err
-	}
+	// Используем прямой SQL запрос вместо squirrel
+	query := "DELETE FROM chats WHERE id_chat = $1"
+	args := []interface{}{idChat}
 
-	_, err = p.pool.Exec(ctx, query, args)
+	log.Printf("query: %v args: %v", query, args)
+
+	_, err := p.pool.Exec(ctx, query, args...)
 	if err != nil {
+		log.Printf("Ошибка выполнения запроса в DeleteChat: %v\n", err)
 		return err
 	}
 
