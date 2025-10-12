@@ -34,6 +34,8 @@ func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model
 		return nil, err
 	}
 
+	log.Printf("query: %v args: %v", query, args)
+
 	var chatRep repoModel.ChatRepository
 	err = p.pool.QueryRow(ctx, query, args).Scan(&chatRep.IdChat)
 	if err != nil{
