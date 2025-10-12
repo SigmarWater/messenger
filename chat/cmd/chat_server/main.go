@@ -28,7 +28,7 @@ type Messenger struct{
 	pb.UnimplementedChatApiServer	
 }
 
-const dbDNS string = "host=84.22.148.185 port=50000 user=sigmarwater password=sigmarwater dbname=messenger sslmode=disable"
+const dbDNS string = "host=84.22.148.185 port=50000 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
 
 
 func NewMessenger(chatService service.ChatService, messageService service.MessageService) *Messenger{

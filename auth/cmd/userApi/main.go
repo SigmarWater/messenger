@@ -25,7 +25,7 @@ type UserApiServer struct {
 	pb.UnimplementedUserAPIServer
 }
 
-const dbDNS string = "host=84.22.148.185 port=50000 user=sigmarwater password=sigmarwater dbname=messenger sslmode=disable"
+const dbDNS string = "host=84.22.148.185 port=50000 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
 
 
 func NewUserApiServer(userService service.UsersService) *UserApiServer {
