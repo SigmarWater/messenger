@@ -43,3 +43,20 @@ func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model
 
 	return converter.MsgRepoToService(chatRep), nil
 }
+
+
+func (p *PostgresChatRepository) DeleteChat(ctx context.Context, idChat int) error{
+	builderDelete := sq.Delete("chats").PlaceholderFormat(sq.Dollar).Where(sq.Eq{"id_chat": idChat})
+
+	query, args, err := builderDelete.ToSql()
+	if err != nil{
+		return err
+	}
+	
+	_, err = p.pool.Exec(ctx, query, args)
+	if err != nil{
+		return err
+	}
+
+	return nil
+}

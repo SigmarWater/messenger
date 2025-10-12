@@ -6,7 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func MessageFromDesc(req pb.SendMessageRequest) *model.MessageService{
+func MessageFromDesc(req *pb.SendMessageRequest) *model.MessageService{
 	return &model.MessageService{
 		ChatId: int(req.GetChatID()) ,
 		FromUser: req.GetFrom(),
@@ -14,7 +14,7 @@ func MessageFromDesc(req pb.SendMessageRequest) *model.MessageService{
 	}
 }
 
-func MessegeFromService(msg model.MessageService) *pb.GetMessageResponse{
+func MessageFromService(msg *model.MessageService) *pb.GetMessageResponse{
 	return &pb.GetMessageResponse{
 		ChatName: msg.ChatName,
 		From: msg.FromUser, 

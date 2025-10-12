@@ -46,7 +46,8 @@ func (r *PostgresUserRepository) GetUser(ctx context.Context, id int) (*model.Us
 	builderSelect := sq.Select("name", "email", "role", "create_at", "update_at").
 		PlaceholderFormat(sq.Dollar).
 		From("users").
-		Where(sq.Eq{"id": id})
+		Where(sq.Eq{"id": id}).
+		Limit(1)
 
 	query, args, err := builderSelect.ToSql()
 	if err != nil {

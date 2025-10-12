@@ -224,8 +224,7 @@ func (x *SendMessageRequest) GetText() string {
 
 type SendMessageResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	From          string                 `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	Text          string                 `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
+	MessageID     int64                  `protobuf:"varint,1,opt,name=messageID,proto3" json:"messageID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -260,18 +259,11 @@ func (*SendMessageResponse) Descriptor() ([]byte, []int) {
 	return file_api_chat_service_messages_chatServer_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *SendMessageResponse) GetFrom() string {
+func (x *SendMessageResponse) GetMessageID() int64 {
 	if x != nil {
-		return x.From
+		return x.MessageID
 	}
-	return ""
-}
-
-func (x *SendMessageResponse) GetText() string {
-	if x != nil {
-		return x.Text
-	}
-	return ""
+	return 0
 }
 
 type GetMessageRequest struct {
@@ -401,10 +393,9 @@ const file_api_chat_service_messages_chatServer_proto_rawDesc = "" +
 	"\x12SendMessageRequest\x12\x16\n" +
 	"\x06chatID\x18\x01 \x01(\x03R\x06chatID\x12\x12\n" +
 	"\x04from\x18\x02 \x01(\tR\x04from\x12\x12\n" +
-	"\x04text\x18\x03 \x01(\tR\x04text\"=\n" +
-	"\x13SendMessageResponse\x12\x12\n" +
-	"\x04from\x18\x01 \x01(\tR\x04from\x12\x12\n" +
-	"\x04text\x18\x02 \x01(\tR\x04text\"#\n" +
+	"\x04text\x18\x03 \x01(\tR\x04text\"3\n" +
+	"\x13SendMessageResponse\x12\x1c\n" +
+	"\tmessageID\x18\x01 \x01(\x03R\tmessageID\"#\n" +
 	"\x11GetMessageRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"\x92\x01\n" +
 	"\x12GetMessageResponse\x12\x1a\n" +

@@ -35,12 +35,13 @@ func ToUserFromDescCreate(req *pb.CreateRequest) *model.UserService {
 		Name:          req.GetName(),
 		Email:         req.GetEmail(),
 		EnterPassword: req.GetPassword(),
+		ConfirmPassword: req.GetPasswordConfirm(),
 		Role:          roleToString(req.GetRole()),
 		CreateAt:      time.Now(),
 	}
 }
 
-func ToDescFromUser(user model.UserService) *pb.GetResponse {
+func ToDescFromUser(user *model.UserService) *pb.GetResponse {
 	return &pb.GetResponse{
 		Name:     user.Name,
 		Email:    user.Email,

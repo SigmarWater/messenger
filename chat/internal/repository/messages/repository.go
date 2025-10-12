@@ -1,4 +1,4 @@
-package message 
+package messages
 
 import(
 	"github.com/SigmarWater/messenger/chat/internal/model"
