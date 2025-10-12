@@ -26,7 +26,7 @@ func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model
 	PlaceholderFormat(sq.Dollar).
 	Columns("chat_name").
 	Values(chatInfo.ChatName).
-	Suffix("RETURNING id_chat, chat_name")
+	Suffix("RETURNING id_chat")
 
 	query, args, err := builderInsert.ToSql()
 	if err != nil{
