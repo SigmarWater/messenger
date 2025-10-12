@@ -22,6 +22,8 @@ func NewPostgresChatRepository(pool *pgxpool.Pool) *PostgresChatRepository {
 // DeleteChat(ctx context.Context, idChat int)
 
 func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model.ChatService) (*model.ChatService, error) {
+	log.Printf("DEBUG: chatInfo.ChatName = '%s' (type: %T)", chatInfo.ChatName, chatInfo.ChatName)
+
 	builderInsert := sq.Insert("chats").
 		PlaceholderFormat(sq.Dollar).
 		Columns("chat_name").
