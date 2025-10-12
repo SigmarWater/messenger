@@ -7,7 +7,7 @@ import(
 )
 
 func (i *Implementation) Delete(ctx context.Context, req *pb.DeleteRequest) (*emptypb.Empty, error){
-	err := i.chatSrv.DeleteChat(ctx, int(req.GetId()))
+	err := i.chatSrv.DeleteChat(ctx, req.GetId())
 	if err != nil{
 		return &emptypb.Empty{}, err
 	}

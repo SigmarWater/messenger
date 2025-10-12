@@ -13,5 +13,5 @@ type MessageService interface{
 
 type ChatService interface{
 	CreateChat(ctx context.Context, chatInfo *model.ChatService) (*model.ChatService, error)
-	DeleteChat(ctx context.Context, idChat int) error
+	DeleteChat(ctx context.Context, idChat int64) error
 }
