@@ -45,6 +45,7 @@ func (p *PostgresChatRepository) DeleteChat(ctx context.Context, idChat int64) e
 
 	query, args, err := builderDelete.ToSql()
 	if err != nil {
+		log.Printf("Ошибка в DeleteChat (repository): %v\n", err)
 		return err
 	}
 
