@@ -24,22 +24,14 @@ func NewPostgresChatRepository(pool *pgxpool.Pool) *PostgresChatRepository {
 func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model.ChatService) (*model.ChatService, error) {
 	log.Printf("DEBUG: chatInfo.ChatName = '%s' (type: %T)", chatInfo.ChatName, chatInfo.ChatName)
 
-	builderInsert := sq.Insert("chats").
-		PlaceholderFormat(sq.Dollar).
-		Columns("chat_name").
-		Values(chatInfo.ChatName).
-		Suffix("RETURNING id_chat, chat_name")
-
-	query, args, err := builderInsert.ToSql()
-	if err != nil {
-		log.Printf("Ошибка при создании запроса в CreateChat: %v\n", err)
-		return nil, err
-	}
+	// Используем прямой SQL запрос вместо squirrel
+	query := "INSERT INTO chats (chat_name) VALUES ($1) RETURNING id_chat, chat_name"
+	args := []interface{}{chatInfo.ChatName}
 
 	log.Printf("query: %v args: %v", query, args)
 
 	var chatRep repoModel.ChatRepository
-	err = p.pool.QueryRow(ctx, query, args).Scan(&chatRep.IdChat, &chatRep.ChatName)
+	err := p.pool.QueryRow(ctx, query, args...).Scan(&chatRep.IdChat, &chatRep.ChatName)
 	if err != nil {
 		log.Printf("Ошибка выполнения запроса в CreateChat: %v\n", err)
 		return nil, err
