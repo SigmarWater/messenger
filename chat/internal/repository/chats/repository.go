@@ -35,7 +35,7 @@ func (p *PostgresChatRepository) CreateChat(ctx context.Context, chatInfo *model
 	}
 
 	var chatRep repoModel.ChatRepository
-	err = p.pool.QueryRow(ctx, query, args).Scan(&chatRep.IdChat, &chatRep.ChatName)
+	err = p.pool.QueryRow(ctx, query, args).Scan(&chatRep.IdChat)
 	if err != nil{
 		log.Printf("Ошибка выполнения запроса в CreateChat: %v\n", err)
 		return nil, err
