@@ -7,6 +7,6 @@ import (
 )
 
 type UserRepository interface {
-	GetUser(ctx context.Context, id int) (*model.UserService, error)
-	InsertUser(ctx context.Context, user *model.UserService) (int, error)
+	GetUser(ctx context.Context, id int64) (*model.UserService, error)
+	InsertUser(ctx context.Context, user *model.UserService) (int64, error)
 }

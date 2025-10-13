@@ -19,7 +19,7 @@ func NewPostgresUserRepository(pool *pgxpool.Pool) *PostgresUserRepository {
 	return &PostgresUserRepository{pool: pool}
 }
 
-func (r *PostgresUserRepository) InsertUser(ctx context.Context, user *model.UserService) (int, error) {
+func (r *PostgresUserRepository) InsertUser(ctx context.Context, user *model.UserService) (int64, error) {
 	builderInsert := sq.Insert("users").
 		PlaceholderFormat(sq.Dollar).
 		Columns("name", "email", "password", "role", "create_at").
@@ -32,7 +32,7 @@ func (r *PostgresUserRepository) InsertUser(ctx context.Context, user *model.Use
 		return 0, err
 	}
 
-	var id int
+	var id int64
 	if err := r.pool.QueryRow(ctx, query, args...).Scan(&id); err != nil {
 		log.Printf("Ошибка в запросе insert к таблице users: %v\n", err)
 		return 0, err
@@ -42,7 +42,7 @@ func (r *PostgresUserRepository) InsertUser(ctx context.Context, user *model.Use
 	return id, nil
 }
 
-func (r *PostgresUserRepository) GetUser(ctx context.Context, id int) (*model.UserService, error) {
+func (r *PostgresUserRepository) GetUser(ctx context.Context, id int64) (*model.UserService, error) {
 	builderSelect := sq.Select("name", "email", "role", "create_at", "update_at").
 		PlaceholderFormat(sq.Dollar).
 		From("users").

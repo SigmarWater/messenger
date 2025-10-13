@@ -11,8 +11,6 @@ import (
 
 	"context"
 
-
-	"github.com/SigmarWater/messenger/auth/internal/service"
 	serv "github.com/SigmarWater/messenger/auth/internal/service/users"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -20,17 +18,10 @@ import (
 	api "github.com/SigmarWater/messenger/auth/internal/api/auth"
 )
 
-type UserApiServer struct {
-	userService service.UsersService
-	pb.UnimplementedUserAPIServer
-}
-
-const dbDNS string = "host=84.22.148.185 port=50000 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
 
 
-func NewUserApiServer(userService service.UsersService) *UserApiServer {
-	return &UserApiServer{userService: userService}
-}
+const dbDNS string = "host=84.22.148.185 port=5430 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
+
 
 func main() {
 	server := grpc.NewServer()

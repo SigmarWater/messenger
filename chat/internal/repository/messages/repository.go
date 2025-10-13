@@ -8,6 +8,7 @@ import (
 	"github.com/SigmarWater/messenger/chat/internal/repository/messages/converter"
 	rpModel "github.com/SigmarWater/messenger/chat/internal/repository/messages/model"
 	"github.com/jackc/pgx/v4/pgxpool"
+	sq "github.com/Masterminds/squirrel"
 )
 
 type PostgresMessageRepository struct {
@@ -19,16 +20,18 @@ func NewPostgresMessageRepository(pool *pgxpool.Pool) *PostgresMessageRepository
 }
 
 func (p *PostgresMessageRepository) SendMessage(ctx context.Context, msg *model.MessageService) (int, error) {
-	log.Printf("DEBUG: msg = %+v", msg)
+	builderInsert := sq.Insert("messages").PlaceholderFormat(sq.Dollar).
+	Columns("id_chat", "from_user", "text_message", "time_at").
+	Values(msg.ChatId, msg.FromUser, msg.TextMessage, msg.TimeAt).
+	Suffix("RETURNING id_message")	
 
-	// Используем прямой SQL запрос вместо squirrel
-	query := "INSERT INTO messages (id_chat, from_user, text_message, time_at) VALUES ($1, $2, $3, $4) RETURNING id_message"
-	args := []interface{}{msg.ChatId, msg.FromUser, msg.TextMessage, msg.TimeAt}
-
-	log.Printf("query: %v args: %v", query, args)
-
+	query, args, err := builderInsert.ToSql()
+	if err != nil{
+		log.Printf("Ошибка в создании запроса SendMessage: %v\n", err)
+		return 0, err 
+	}
 	var idMessage int
-	err := p.pool.QueryRow(ctx, query, args...).Scan(&idMessage)
+	err = p.pool.QueryRow(ctx, query, args...).Scan(&idMessage)
 	if err != nil {
 		log.Printf("Ошибка в запросе insert: %v\n", err)
 		return 0, err
@@ -39,16 +42,19 @@ func (p *PostgresMessageRepository) SendMessage(ctx context.Context, msg *model.
 }
 
 func (p *PostgresMessageRepository) GetMessage(ctx context.Context, id_message int) (*model.MessageService, error) {
-	log.Printf("DEBUG: id_message = %d (type: %T)", id_message, id_message)
+	
+	builderSelect := sq.Select("id_message", "chats.id_chat", "chat_name", "from_user", "text_message", "time_at").
+	From("messages").
+	InnerJoin("chats ON messages.id_chat=chats.id_chat")
 
-	// Используем прямой SQL запрос вместо squirrel
-	query := "SELECT id_message, id_chat, chat_name, from_user, text_message, time_at FROM messages INNER JOIN chats ON messages.id_chat = chats.id_chat WHERE id_message = $1"
-	args := []interface{}{id_message}
-
-	log.Printf("query: %v args: %v", query, args)
+	query, args, err := builderSelect.ToSql() 
+	if err != nil{
+		log.Printf("Ошибка преобразования запроса GetMessage: %v\n", err)
+		return nil, err 
+	}
 
 	var message rpModel.MessageRepository
-	err := p.pool.QueryRow(ctx, query, args...).
+	err = p.pool.QueryRow(ctx, query, args...).
 		Scan(&message.IdMessage, &message.IdChat, &message.ChatName, &message.FromUser, &message.TextMessage, &message.TimeAt)
 	if err != nil {
 		log.Printf("Ошибка в запросе select: %v\n", err)

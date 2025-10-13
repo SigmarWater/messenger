@@ -6,7 +6,7 @@ import(
 )
 
 func (s *serv) Get(ctx context.Context, id int64)(*model.UserService, error){
-	user, err := s.userRepository.GetUser(ctx, int(id))
+	user, err := s.userRepository.GetUser(ctx, id)
 	
 	if err != nil{
 		return nil, err 
