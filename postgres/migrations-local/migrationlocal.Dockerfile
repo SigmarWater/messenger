@@ -14,6 +14,6 @@ ADD *.sql migrations-local/
 ADD migrations-local.sh .
 ADD local.env .
 
-RUN chmod +x migration.sh
+RUN chmod +x migration-local.sh
 
 ENTRYPOINT ["bash", "migrations-local.sh"]
