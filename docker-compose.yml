@@ -27,7 +27,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DATABASE_NAME}
   postgres-local:
-    image: postgresDbLocal
+    image: postgres
+    container_name: postgresDbLocal
     env_file:
     - ./postgres/migrations-local/local.env
     ports:
