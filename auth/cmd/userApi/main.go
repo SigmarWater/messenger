@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"os"
 
 	rep "github.com/SigmarWater/messenger/auth/internal/repository/users"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
@@ -15,27 +16,48 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	"flag"
+
 	api "github.com/SigmarWater/messenger/auth/internal/api/auth"
+	"github.com/SigmarWater/messenger/auth/internal/config"
+	"github.com/SigmarWater/messenger/auth/internal/config/env"
 )
 
+var serviceConf string
 
-
-const dbDNS string = "host=84.22.148.185 port=5430 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
-
+func init() {
+	flag.StringVar(&serviceConf, "env", ".env", "path to config")
+}
 
 func main() {
-	server := grpc.NewServer()
+	flag.Parse()
 
-	lis, err := net.Listen("tcp", ":8083")
+	err := config.Load(serviceConf)
+	if err != nil {
+		log.Fatalf("failed download env: %v\n", err)
+	}
+
+	server := grpc.NewServer()
+	grpcConfig, err := env.NewGrpcConfig()
+	if err != nil {
+		log.Fatalf("bad config for grpc: %v\n", err)
+	}
+
+	pgCongig, err := env.NewPgConfig()
+	if err != nil {
+		log.Fatalf("bad config for postgres: %v\n", err)
+	}
+
+	lis, err := net.Listen("tcp", grpcConfig.Address())
 	if err != nil {
 		log.Printf("Ошибка соединения: %v\n", err)
 		return
 	}
 
-	pool, err := pgxpool.Connect(context.Background(), dbDNS)
-	if err != nil{
+	pool, err := pgxpool.Connect(context.Background(), pgCongig.DNS())
+	if err != nil {
 		log.Printf("failed to connect to database: %v\n", err)
-		return 
+		return
 	}
 	defer pool.Close()
 
@@ -46,11 +68,10 @@ func main() {
 
 	reflection.Register(server)
 
-	log.Println("Запускаем сервер")
+	log.Printf("Запускаем сервер по адресу: %v\n", net.JoinHostPort(os.Getenv("GRPC_HOST"), os.Getenv("GRPC_PORT")))
 
 	if err := server.Serve(lis); err != nil {
 		log.Printf("Ошибка при прослушивании порта: %v\n", err)
 		return
 	}
 }
-
