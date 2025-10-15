@@ -2,24 +2,31 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net"
+
 	"github.com/SigmarWater/messenger/chat/internal/service"
-	
+
 	"github.com/SigmarWater/messenger/chat/internal/repository/chats"
 	"github.com/SigmarWater/messenger/chat/internal/repository/messages"
 	pb "github.com/SigmarWater/messenger/chat/pkg/api/chat_service"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	
-	
 
+	api "github.com/SigmarWater/messenger/chat/internal/api/chat"
 	"github.com/SigmarWater/messenger/chat/internal/service/chat"
 	"github.com/SigmarWater/messenger/chat/internal/service/message"
-	api "github.com/SigmarWater/messenger/chat/internal/api/chat"
+	"github.com/SigmarWater/messenger/chat/internal/config"
+	"github.com/SigmarWater/messenger/chat/internal/config/env"
 )
 
+var configPath string
+
+func init(){
+	flag.StringVar(&configPath, "env", "c:\\users\\admin\\desktop\\goproject\\messenger\\postgres\\migrations\\.env", "path to config file")
+}
 
 type Messenger struct{
 	chatService service.ChatService
@@ -27,9 +34,6 @@ type Messenger struct{
 	
 	pb.UnimplementedChatApiServer	
 }
-
-const dbDNS string = "host=84.22.148.185 port=5430 user=sigmawater password=sigmawater dbname=messenger sslmode=disable"
-
 
 func NewMessenger(chatService service.ChatService, messageService service.MessageService) *Messenger{
 	return &Messenger{
@@ -40,15 +44,33 @@ func NewMessenger(chatService service.ChatService, messageService service.Messag
 
 
 func main(){
+
+	flag.Parse()
+
+	err := config.Load(configPath)
+	if err != nil{
+		log.Fatalf("failed to load config: %v\n", err)
+	}
+
+	grpcConfig, err := env.NewConfig()
+	if err != nil{
+		log.Fatalf("failed to get grpc config %v\n", err)
+	}
+
+	pgConfig, err := env.NewPGConfig() 
+	if err != nil{
+		log.Fatalf("failed to listen %v\n", err)
+	}
+
 	server := grpc.NewServer()
 
-	lis, err := net.Listen("tcp",":8085")
+	lis, err := net.Listen("tcp", grpcConfig.Address())
 	if err != nil{
 		log.Println("err")
 		return 
 	}
 
-	pool, err := pgxpool.Connect(context.Background(), dbDNS)
+	pool, err := pgxpool.Connect(context.Background(), pgConfig.DSN())
 	if err != nil{
 		log.Fatal("failed to connect to database")
 		return
