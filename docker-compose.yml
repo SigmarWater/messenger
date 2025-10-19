@@ -1,12 +1,12 @@
 services:
-#   auth:
-#     container_name: auth_service
-#     build: 
-#       context: ./auth
-#       dockerfile: ./auth/Dockerfile
-#     ports: 
-#       - "8083:8083"
-#     restart: always
+  auth:
+    container_name: auth_service
+    build: 
+      context: .
+      dockerfile: ./auth/Dockerfile
+    ports: 
+      - "8083:8083"
+    restart: always
 #   chat:
 #     container_name: chat_service
 #     build:
