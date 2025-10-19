@@ -5,13 +5,13 @@ services:
     container_name: auth_service
     build: ./auth
     ports: 
-      - "8500:8083"
+      - "8083:8083"
     restart: always
   chat:
     container_name: chat_service
     build: ./chat
     ports:
-      - "8501:8085" 
+      - "8085:8085" 
     restart: always
   postgres-prod:
     image: postgres 
