@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"github.com/SigmarWater/messenger/chat/internal/api/chat"
 	apiChat "github.com/SigmarWater/messenger/chat/internal/api/chat"
 	"github.com/SigmarWater/messenger/chat/internal/closer"
 	"github.com/SigmarWater/messenger/chat/internal/config"
@@ -25,7 +24,7 @@ type serviceProvider struct {
 	repoMessages    repository.MessageRepository
 	srvChat         service.ChatService
 	srvMessages     service.MessageService
-	implChatService *chat.Implementation
+	implChatService *apiChat.Implementation
 }
 
 func newServiceProvider() *serviceProvider {
