@@ -1,27 +1,25 @@
 version: "3.9"
   
 services:
-  auth:
-    container_name: auth_service
-    build: 
-      context: ${PWD}/auth
-      dockerfile: ${PWD}/auth/Dockerfile
-    ports: 
-      - "8083:8083"
-    restart: always
-  chat:
-    container_name: chat_service
-    build:
-      context: ${PWD}/chat
-      dockerfile: ${PWD}/chat/Dockerfile
-    ports:
-      - "8085:8085" 
-    restart: always
+#   auth:
+#     container_name: auth_service
+#     build: 
+#       context: ./auth
+#       dockerfile: ./auth/Dockerfile
+#     ports: 
+#       - "8083:8083"
+#     restart: always
+#   chat:
+#     container_name: chat_service
+#     build:
+#       context: ./chat
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8085:8085" 
+#     restart: always
   postgres-prod:
     image: postgres 
-    container_name: postgresDbProd
-    env_file:
-      - ./postgres/migrations/.env 
+    container_name: postgresDbProd 
     ports:
       - "50011:5432"
     volumes:
@@ -34,8 +32,8 @@ services:
   migrator-prod:  
     container_name: migration-prod
     build:
-      context: ${PWD}/postgres/migrations
-      dockerfile: ${PWD}/postgres/migrations/migration.Dockerfile
+      context: ./postgres/migrations
+      dockerfile: migration.Dockerfile
     restart: on-failure
     
 volumes:
