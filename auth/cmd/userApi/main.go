@@ -10,7 +10,7 @@ import (
 var serviceConf string
 
 func init() {
-	flag.StringVar(&serviceConf, "env", "messenger/postgres/migrations/.env", "path to config")
+	flag.StringVar(&serviceConf, "env", "./postgres/migrations/.env", "path to config")
 }
 
 func main() {

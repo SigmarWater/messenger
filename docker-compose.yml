@@ -3,17 +3,13 @@ version: "3.9"
 services:
   auth:
     container_name: auth_service
-    build:
-      context: .
-      dockerfile: ./auth/Dockerfile
+    build: ./auth
     ports: 
       - "8083:8083"
     restart: always
   chat:
     container_name: chat_service
-    build:
-      context: .
-      dockerfile: ./chat/Dockerfile
+    build: /chat
     ports:
       - "8085:8085" 
     restart: always
@@ -30,36 +26,36 @@ services:
       POSTGRES_USER: sigmawater
       POSTGRES_PASSWORD: sigmawater
       POSTGRES_DB: messenger_prod
-  postgres-local:
-    image: postgres
-    container_name: postgresDbLocal
-    env_file:
-    - ./postgres/migrations-local/local.env
-    ports:
-      - "50010:5432"
-    volumes:
-      - posgres_volume_local:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: sigmawater
-      POSTGRES_PASSWORD: sigmawater
-      POSTGRES_DB: messenger_local
+#  postgres-local:
+#    image: postgres
+#    container_name: postgresDbLocal
+#    env_file:
+#    - ./postgres/migrations-local/local.env
+#    ports:
+#      - "50010:5432"
+#    volumes:
+#      - posgres_volume_local:/var/lib/postgresql/data
+#    environment:
+#      POSTGRES_USER: sigmawater
+#      POSTGRES_PASSWORD: sigmawater
+#      POSTGRES_DB: messenger_local
   migrator-prod:  
     container_name: migration-prod
     build:
       context: ./postgres/migrations
       dockerfile: migration.Dockerfile
     restart: on-failure
-  migrator-local:
-    container_name: migration-local
-    build:
-      context: ./postgres/migrations-local
-      dockerfile: migrationlocal.Dockerfile 
-    restart: on-failure 
+#  migrator-local:
+#    container_name: migration-local
+#    build:
+#      context: ./postgres/migrations-local
+#      dockerfile: migrationlocal.Dockerfile
+#    restart: on-failure
     
 
 
 volumes:
   pgdata:
     driver: local
-  posgres_volume_local:
-    driver: local
+#  posgres_volume_local:
+#    driver: local
