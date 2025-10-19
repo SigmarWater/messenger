@@ -4,16 +4,16 @@ services:
   auth:
     container_name: auth_service
     build: 
-      context: .
-      dockerfile: auth/Dockerfile
+      context: ./auth
+      dockerfile: Dockerfile
     ports: 
       - "8083:8083"
     restart: always
   chat:
     container_name: chat_service
     build:
-      context: .
-      dockerfile: chat/Dockerfile
+      context: ./chat
+      dockerfile: Dockerfile
     ports:
       - "8085:8085" 
     restart: always
