@@ -10,7 +10,7 @@ import (
 var configPath string
 
 func init() {
-	flag.StringVar(&configPath, "env", "c:\\users\\admin\\desktop\\goproject\\messenger\\postgres\\migrations\\.env", "path to config file")
+	flag.StringVar(&configPath, "env", "messenger/postgres/migrations/.env", "path to config file")
 }
 
 func main() {
