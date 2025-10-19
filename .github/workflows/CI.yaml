@@ -46,11 +46,7 @@ jobs:
                 username: ${{secrets.VPS_USERNAME}}
                 password: ${{secrets.VPS_PASSWORD}}
                 script: |
-                    mkdir messenger2 
-                    cd messenger2
                     docker pull ${{vars.DOCKERHUB_USERNAME}}/auth_service:latest 
                     docker pull ${{vars.DOCKERHUB_USERNAME}}/chat_service:latest 
-                    docker run -d -p 8105:8083 --name=auth ${{vars.DOCKERHUB_USERNAME}}/auth_service:latest 
-                    docker run -d -p 8106:8085 --name=chat ${{vars.DOCKERHUB_USERNAME}}/chat_service:latest
               
  
