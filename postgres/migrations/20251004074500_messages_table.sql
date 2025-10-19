@@ -5,7 +5,7 @@ create table messages(
     id_chat int not null references chats(id_chat) on delete cascade,
     from_user text not null,
     text_message text, 
-    time_at timestamp default now(),
+    time_at timestamp default now()
 );
 -- +goose StatementEnd
 
