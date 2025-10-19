@@ -25,4 +25,4 @@ jobs:
                    git clone https://github.com/SigmarWater/messenger.git messenger-service
                    cd messenger-service
                    docker compose down 
-                   docker compose up -d --build postgres-prod migrator-prod
+                   docker compose up -d --build
