@@ -2,14 +2,15 @@ package app
 
 import (
 	"context"
+	"log"
+	"net"
+
 	"github.com/SigmarWater/messenger/chat/internal/closer"
 	"github.com/SigmarWater/messenger/chat/internal/config"
 	pb "github.com/SigmarWater/messenger/chat/pkg/api/chat_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"log"
-	"net"
 )
 
 type App struct {
@@ -56,7 +57,7 @@ func (a *App) initDeps(ctx context.Context) error {
 }
 
 func (a *App) initConfig(_ context.Context) error {
-	err := config.Load("C:\\Users\\Admin\\Desktop\\goProject\\messenger\\postgres\\migrations\\.env")
+	err := config.Load("postgres/migrations/.env")
 	if err != nil {
 		return err
 	}
