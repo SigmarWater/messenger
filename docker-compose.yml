@@ -23,7 +23,7 @@ services:
     env_file:
       - ./postgres/migrations/.env 
     ports:
-      - "50010:5432"
+      - "50011:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
@@ -36,7 +36,7 @@ services:
     env_file:
     - ./postgres/migrations-local/local.env
     ports:
-      - "50011:5432"
+      - "50010:5432"
     volumes:
       - posgres_volume_local:/var/lib/postgresql/data
     environment:
