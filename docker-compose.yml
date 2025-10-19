@@ -19,7 +19,7 @@ services:
     env_file:
       - ./postgres/migrations/.env 
     ports:
-      - ${PG_PORT}:5432
+      - "${PG_PROD_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
@@ -32,7 +32,7 @@ services:
     env_file:
     - ./postgres/migrations-local/local.env
     ports:
-      - "${PG_PORT}:5432"
+      - "${PG_LOCAL_PORT}:5432"
     volumes:
       - posgres_volume_local:/var/lib/postgresql/data
     environment:
@@ -44,9 +44,7 @@ services:
     build:
       context: ./postgres/migrations
       dockerfile: migration.Dockerfile
-    restart: on-failure 
-    environment:
-      DB_HOST: postgres 
+    restart: on-failure
   migrator-local:
     container_name: migration-local
     build:

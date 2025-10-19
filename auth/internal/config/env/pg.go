@@ -18,12 +18,12 @@ type pgConfig struct{
 }
 
 func NewPgConfig() (*pgConfig, error){
-	dsn := os.Getenv(dsnEnvName) 
-	if len(dsn) == 0{
+	dns := os.Getenv(dsnEnvName) 
+	if len(dns) == 0{
 		return nil, errors.New("not found such value")
 	}
 	return &pgConfig{
-		dns: dsn,
+		dns: dns,
 	}, nil 
 }
 
