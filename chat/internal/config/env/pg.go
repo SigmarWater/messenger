@@ -1,21 +1,21 @@
 package env
 
-import(
-	"os"
+import (
 	"errors"
-) 
-
-const(
-	dsnEnvName = "PG_DSN"
+	"os"
 )
 
-type pgConfig struct{
-	dsn string 
+const (
+	dsnEnvName = "PG_DNS"
+)
+
+type pgConfig struct {
+	dsn string
 }
 
-func NewPGConfig() (*pgConfig, error){
+func NewPGConfig() (*pgConfig, error) {
 	dsn := os.Getenv(dsnEnvName)
-	if len(dsn) == 0{
+	if len(dsn) == 0 {
 		return nil, errors.New("pg dsn not found")
 	}
 
@@ -24,6 +24,6 @@ func NewPGConfig() (*pgConfig, error){
 	}, nil
 }
 
-func (cfg *pgConfig) DSN() string{
+func (cfg *pgConfig) DSN() string {
 	return cfg.dsn
 }
