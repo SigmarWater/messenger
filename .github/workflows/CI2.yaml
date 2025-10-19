@@ -21,8 +21,8 @@ jobs:
                 username: ${{secrets.VPS_USERNAME}}
                 password: ${{secrets.VPS_PASSWORD}} 
                 script: | 
-                   rm -rf messenger
+                   rm -rf messenger-service
                    git clone https://github.com/SigmarWater/messenger.git messenger-service
                    cd messenger-service
                    docker compose down 
-                   docker compose up -d --build
+                   docker compose up -d --build postgres-prod migrator-prod
