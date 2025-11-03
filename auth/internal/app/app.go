@@ -127,7 +127,7 @@ func (a *app) initHTTPServer(ctx context.Context) error{
 	err := pb.RegisterUserAPIHandlerFromEndpoint(
 		ctx,
 		mux,
-		a.serviceProvider.HTTPConfig().Address(),
+		a.serviceProvider.GRPCConfig().Address(),
 		opts,
 	)
 
