@@ -92,7 +92,7 @@ func (a *app) initDeps(ctx context.Context) error {
 }
 
 func (a *app) initConfig(_ context.Context) error {
-	err := config.Load("./.env")
+	err := config.Load(".env")
 	if err != nil {
 		return err
 	}
