@@ -88,12 +88,12 @@ func (a *app) initDeps(ctx context.Context) error {
 		}
 	}
 
-	if a.serviceProvider.grpcConfig == nil {
-        log.Println("grpcConfig is nil!")
+	if a.serviceProvider.grpcConfig.Address() == "" {
+        log.Println("grpcConfig is empty!")
     }
-    if a.serviceProvider.httpConfig == nil {
-        log.Println("httpConfig is nil!")
-    }
+    // if a.serviceProvider.httpConfig.Address() == "" {
+    //     log.Println("httpConfig is empty!")
+    // }
 
 	return nil
 }
