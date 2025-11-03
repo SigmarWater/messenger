@@ -25,7 +25,7 @@ services:
      restart: always
 
   postgres-prod:
-    image: postgres 
+    image: postgres:15-alpine 
     container_name: postgresDbProd 
     env_file:
       - "./postgres/migrations/.env"
@@ -34,9 +34,9 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD: ${PG_PASSWORD}
-      POSTGRES_DB: ${PG_DATABASE_NAME}
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-postgres}
+      POSTGRES_DB: ${PG_DATABASE_NAME:-messenger}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
       interval: 5s
