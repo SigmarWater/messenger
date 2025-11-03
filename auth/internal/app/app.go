@@ -45,7 +45,7 @@ func (a *app) Run() error {
 
 	wg := &sync.WaitGroup{} 
 
-	wg.Add(2)
+	wg.Add(1)
 
 	go func(){
 		defer wg.Done() 
@@ -57,15 +57,15 @@ func (a *app) Run() error {
 		}
 	}()
 
-	go func(){
-		defer wg.Done() 
+	// go func(){
+	// 	defer wg.Done() 
 
-		err := a.runHTTPServer()
+	// 	err := a.runHTTPServer()
 
-		if err != nil{
-			log.Fatalf("failed to run GRPC server")
-		}
-	}()
+	// 	if err != nil{
+	// 		log.Fatalf("failed to run GRPC server")
+	// 	}
+	// }()
 
 	wg.Wait() 
 
@@ -78,7 +78,7 @@ func (a *app) initDeps(ctx context.Context) error {
 		a.initConfig,
 		a.initServiceProvider,
 		a.initGRPCServer,
-		a.initHTTPServer,
+		//a.initHTTPServer,
 	}
 
 	for _, f := range inits {
@@ -126,33 +126,33 @@ func (a *app) initGRPCServer(ctx context.Context) error {
 	return nil
 }
 
-func (a *app) initHTTPServer(ctx context.Context) error{
-	// Создаем мультиплексор для HTTP запросов
-	mux := runtime.NewServeMux()
+// func (a *app) initHTTPServer(ctx context.Context) error{
+// 	// Создаем мультиплексор для HTTP запросов
+// 	mux := runtime.NewServeMux()
 
-	// Настраиваем опции для соединения с gRPC сервером
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+// 	// Настраиваем опции для соединения с gRPC сервером
+// 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	// Регистрируем gRPC-gateway хендлеры
-	err := pb.RegisterUserAPIHandlerFromEndpoint(
-		ctx,
-		mux,
-		a.serviceProvider.grpcConfig.Address(),
-		opts,
-	)
+// 	// Регистрируем gRPC-gateway хендлеры
+// 	err := pb.RegisterUserAPIHandlerFromEndpoint(
+// 		ctx,
+// 		mux,
+// 		a.serviceProvider.grpcConfig.Address(),
+// 		opts,
+// 	)
 
-	if err != nil {
-		log.Printf("Failed to register gateway: %v\n", err)
-		return err 
-	}
+// 	if err != nil {
+// 		log.Printf("Failed to register gateway: %v\n", err)
+// 		return err 
+// 	}
 
-	a.httpServer = &http.Server{
-		Addr: a.serviceProvider.HTTPConfig().Address() ,
-		Handler: mux,
-	}
+// 	a.httpServer = &http.Server{
+// 		Addr: a.serviceProvider.HTTPConfig().Address() ,
+// 		Handler: mux,
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func (a *app) runGRPCServer() error {
 	log.Printf("GRPC server is running on %s", a.serviceProvider.GRPCConfig().Address())
@@ -170,14 +170,14 @@ func (a *app) runGRPCServer() error {
 	return nil
 }
 
-func (a *app) runHTTPServer() error{
-	log.Printf("HTTP server is running on %s", a.serviceProvider.httpConfig.Address())
+// func (a *app) runHTTPServer() error{
+// 	log.Printf("HTTP server is running on %s", a.serviceProvider.httpConfig.Address())
 
-	err := a.httpServer.ListenAndServe()
+// 	err := a.httpServer.ListenAndServe()
 
-	if err != nil{
-		return err 
-	}
+// 	if err != nil{
+// 		return err 
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
