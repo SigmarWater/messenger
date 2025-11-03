@@ -7,7 +7,7 @@ import (
 	"sync"
 
 
-	"net/http"
+	//"net/http"
 	
 
 	"github.com/SigmarWater/messenger/auth/internal/closer"
@@ -23,7 +23,7 @@ import (
 type app struct {
 	serviceProvider *serviceProvider
 	grpcServer      *grpc.Server
-	httpServer *http.Server 
+	//httpServer *http.Server 
 }
 
 func NewApp(ctx context.Context) (*app, error) {
@@ -87,13 +87,6 @@ func (a *app) initDeps(ctx context.Context) error {
 			return err
 		}
 	}
-
-	if a.serviceProvider.grpcConfig.Address() == "" {
-        log.Println("grpcConfig is empty!")
-    }
-    // if a.serviceProvider.httpConfig.Address() == "" {
-    //     log.Println("httpConfig is empty!")
-    // }
 
 	return nil
 }
