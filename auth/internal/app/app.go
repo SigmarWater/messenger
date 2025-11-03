@@ -88,6 +88,13 @@ func (a *app) initDeps(ctx context.Context) error {
 		}
 	}
 
+	if a.serviceProvider.grpcConfig == nil {
+        log.Println("grpcConfig is nil!")
+    }
+    if a.serviceProvider.httpConfig == nil {
+        log.Println("httpConfig is nil!")
+    }
+
 	return nil
 }
 
@@ -102,16 +109,6 @@ func (a *app) initConfig(_ context.Context) error {
 
 func (a *app) initServiceProvider(_ context.Context) error {
 	a.serviceProvider = newServiceProvider()
-
-	
-    log.Printf("serviceProvider initialized: %+v", a.serviceProvider)
-
-    if a.serviceProvider.grpcConfig == nil {
-        log.Println("grpcConfig is nil!")
-    }
-    if a.serviceProvider.httpConfig == nil {
-        log.Println("httpConfig is nil!")
-    }
 
 	return nil
 }
