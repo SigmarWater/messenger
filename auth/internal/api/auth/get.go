@@ -1,10 +1,10 @@
 package auth
 
-import(
+import (
 	"context"
+	"github.com/SigmarWater/messenger/auth/internal/converter"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
 	"log"
-	"github.com/SigmarWater/messenger/auth/internal/converter"
 )
 
 func (i *Implementation) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
@@ -14,7 +14,6 @@ func (i *Implementation) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetRe
 	}
 
 	log.Printf("Получаем user: %+#v\n", user)
-
 
 	return converter.ToDescFromUser(user), nil
 }

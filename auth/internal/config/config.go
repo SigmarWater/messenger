@@ -19,3 +19,7 @@ type GRPCConfig interface {
 type PGConfig interface {
 	DSN() string
 }
+
+type HTTPConfig interface{
+	Address() string
+}

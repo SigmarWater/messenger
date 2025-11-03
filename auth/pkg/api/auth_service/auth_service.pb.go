@@ -7,6 +7,7 @@
 package auth_service
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -25,12 +26,12 @@ var File_api_auth_service_auth_service_proto protoreflect.FileDescriptor
 
 const file_api_auth_service_auth_service_proto_rawDesc = "" +
 	"\n" +
-	"#api/auth_service/auth_service.proto\x12(messenger.auth.protobuf.api.auth_service\x1a\x1bgoogle/protobuf/empty.proto\x1a$api/auth_service/auth_messages.proto2\xb0\x03\n" +
-	"\aUserAPI\x12{\n" +
-	"\x06Create\x127.messenger.auth.protobuf.api.auth_service.CreateRequest\x1a8.messenger.auth.protobuf.api.auth_service.CreateResponse\x12r\n" +
-	"\x03Get\x124.messenger.auth.protobuf.api.auth_service.GetRequest\x1a5.messenger.auth.protobuf.api.auth_service.GetResponse\x12Y\n" +
-	"\x06Update\x127.messenger.auth.protobuf.api.auth_service.UpdateRequest\x1a\x16.google.protobuf.Empty\x12Y\n" +
-	"\x06Delete\x127.messenger.auth.protobuf.api.auth_service.DeleteRequest\x1a\x16.google.protobuf.EmptyB\xa7\x02\n" +
+	"#api/auth_service/auth_service.proto\x12(messenger.auth.protobuf.api.auth_service\x1a\x1bgoogle/protobuf/empty.proto\x1a$api/auth_service/auth_messages.proto\x1a\x1cgoogle/api/annotations.proto2\xa1\x04\n" +
+	"\aUserAPI\x12\x95\x01\n" +
+	"\x06Create\x127.messenger.auth.protobuf.api.auth_service.CreateRequest\x1a8.messenger.auth.protobuf.api.auth_service.CreateResponse\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/api/v1/users\x12\x8e\x01\n" +
+	"\x03Get\x124.messenger.auth.protobuf.api.auth_service.GetRequest\x1a5.messenger.auth.protobuf.api.auth_service.GetResponse\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/api/v1/users/{id}\x12w\n" +
+	"\x06Update\x127.messenger.auth.protobuf.api.auth_service.UpdateRequest\x1a\x16.google.protobuf.Empty\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*2\x11/api/v1/user/{id}\x12t\n" +
+	"\x06Delete\x127.messenger.auth.protobuf.api.auth_service.DeleteRequest\x1a\x16.google.protobuf.Empty\"\x19\x82\xd3\xe4\x93\x02\x13*\x11/api/v1/user/{id}B\xa7\x02\n" +
 	",com.messenger.auth.protobuf.api.auth_serviceB\x10AuthServiceProtoP\x01Z#messenger/auth/pkg/api/auth_service\xa2\x02\x05MAPAA\xaa\x02'Messenger.Auth.Protobuf.Api.AuthService\xca\x02'Messenger\\Auth\\Protobuf\\Api\\AuthService\xe2\x023Messenger\\Auth\\Protobuf\\Api\\AuthService\\GPBMetadata\xea\x02+Messenger::Auth::Protobuf::Api::AuthServiceb\x06proto3"
 
 var file_api_auth_service_auth_service_proto_goTypes = []any{

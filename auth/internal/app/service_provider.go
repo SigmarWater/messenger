@@ -19,6 +19,7 @@ import (
 type serviceProvider struct {
 	pgConfig   config.PGConfig
 	grpcConfig config.GRPCConfig
+	httpConfig config.HTTPConfig
 
 	pgPool         *pgxpool.Pool
 	userRepository repository.UserRepository
@@ -56,6 +57,19 @@ func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
 	}
 	return s.grpcConfig
 }
+
+func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
+	if s.httpConfig == nil {
+		httpCfg, err := env.NewHTTPConfig()
+		if err != nil {
+			log.Fatalf("failed to get grpc config: %v\n", err.Error())
+		}
+
+		s.httpConfig = httpCfg
+	}
+	return s.httpConfig
+}
+
 
 func (s *serviceProvider) PgPool(ctx context.Context) *pgxpool.Pool {
 	if s.pgPool == nil {

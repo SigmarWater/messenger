@@ -1,15 +1,15 @@
-package users 
+package users
 
-import(
+import (
 	"context"
 	"github.com/SigmarWater/messenger/auth/internal/model"
 )
 
-func (s *serv) Get(ctx context.Context, id int64)(*model.UserService, error){
+func (s *serv) Get(ctx context.Context, id int64) (*model.UserService, error) {
 	user, err := s.userRepository.GetUser(ctx, id)
-	
-	if err != nil{
-		return nil, err 
+
+	if err != nil {
+		return nil, err
 	}
 
 	return user, err
