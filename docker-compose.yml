@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   auth:
     container_name: auth_service
@@ -7,6 +9,8 @@ services:
     ports: 
       - "8083:8083"
       - "50000:50000"
+    depends_on:
+      - postgres-prod
     restart: always
 
   chat:
@@ -16,6 +20,8 @@ services:
        dockerfile: ./chat/Dockerfile
      ports:
        - "8085:8085"
+     depends_on:
+       - postgres-prod
      restart: always
 
   postgres-prod:
@@ -31,12 +37,20 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DATABASE_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   migrator-prod:  
     container_name: migration-prod
     build:
       context: ./postgres/migrations
       dockerfile: migration.Dockerfile
+    depends_on:
+      postgres-prod:
+        condition: service_healthy
     restart: on-failure
 
 volumes:

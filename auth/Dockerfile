@@ -9,4 +9,5 @@ FROM alpine:3.22.1
 WORKDIR /app
 COPY --from=builder /app/auth_service /app/
 COPY postgres/migrations/.env /app/.env
+EXPOSE 8083 50000
 CMD ["./auth_service"] 

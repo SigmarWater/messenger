@@ -9,6 +9,7 @@ FROM alpine:3.22.1
 WORKDIR /app 
 COPY --from=builder /app/chat_server /app/
 COPY postgres/migrations/.env /app/.env
+EXPOSE 8085
 CMD ["./chat_server"] 
 
 
