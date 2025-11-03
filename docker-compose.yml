@@ -12,8 +12,8 @@ services:
   chat:
      container_name: chat_service
      build:
-       context: ./chat
-       dockerfile: Dockerfile
+       context: .
+       dockerfile: ./chat/Dockerfile
      ports:
        - "8085:8085"
      restart: always
