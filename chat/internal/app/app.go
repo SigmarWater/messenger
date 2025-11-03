@@ -57,7 +57,7 @@ func (a *App) initDeps(ctx context.Context) error {
 }
 
 func (a *App) initConfig(_ context.Context) error {
-	err := config.Load("./postgres/migrations/.env")
+	err := config.Load("./.env")
 	if err != nil {
 		return err
 	}

@@ -8,5 +8,5 @@ RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o auth_service ./cmd/userApi
 FROM alpine:3.22.1   
 WORKDIR /app
 COPY --from=builder /app/auth_service /app/
-COPY postgres/migrations/.env /app/
+COPY postgres/migrations/.env /app/.env
 CMD ["./auth_service"] 
