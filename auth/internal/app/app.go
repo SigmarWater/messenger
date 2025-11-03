@@ -13,7 +13,7 @@ import (
 	"github.com/SigmarWater/messenger/auth/internal/closer"
 	"github.com/SigmarWater/messenger/auth/internal/config"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	// "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
