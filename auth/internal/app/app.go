@@ -6,12 +6,13 @@ import (
 	"net"
 	"sync"
 
-
 	"net/http"
-	
+
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 
 	"github.com/SigmarWater/messenger/auth/internal/closer"
 	"github.com/SigmarWater/messenger/auth/internal/config"
+	"github.com/SigmarWater/messenger/auth/internal/interceptop"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -107,7 +108,9 @@ func (a *app) initServiceProvider(_ context.Context) error {
 }
 
 func (a *app) initGRPCServer(ctx context.Context) error {
-	a.grpcServer = grpc.NewServer(grpc.Creds(insecure.NewCredentials()))
+	a.grpcServer = grpc.NewServer(grpc.ChainUnaryInterceptor(
+		interceptop.LoggerInceptop(),
+	))
 
 	reflection.Register(a.grpcServer)
 
