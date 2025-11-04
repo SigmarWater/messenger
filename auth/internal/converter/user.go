@@ -2,6 +2,9 @@ package converter
 
 import (
 	"time"
+	"log"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/SigmarWater/messenger/auth/internal/model"
 	pb "github.com/SigmarWater/messenger/auth/pkg/api/auth_service"
@@ -30,7 +33,11 @@ func stringToRole(role string) pb.Role {
 	}
 }
 
-func ToUserFromDescCreate(req *pb.CreateRequest) *model.UserService {
+func ToUserFromDescCreate(req *pb.CreateRequest) (*model.UserService, error){
+	if err := req.Validate(); err != nil{
+		log.Printf(err.Error())
+		return nil, status.Errorf(codes.InvalidArgument, "validate error %v", err)
+	}
 	return &model.UserService{
 		Name:          req.GetName(),
 		Email:         req.GetEmail(),
@@ -38,7 +45,7 @@ func ToUserFromDescCreate(req *pb.CreateRequest) *model.UserService {
 		ConfirmPassword: req.GetPasswordConfirm(),
 		Role:          roleToString(req.GetRole()),
 		CreateAt:      time.Now(),
-	}
+	}, nil
 }
 
 func ToDescFromUser(user *model.UserService) *pb.GetResponse {

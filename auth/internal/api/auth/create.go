@@ -12,7 +12,10 @@ import (
 )
 
 func (i *Implementation) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
-	user := converter.ToUserFromDescCreate(req)
+	user,err := converter.ToUserFromDescCreate(req)
+	if err != nil{
+		return nil, err
+	}
 
 	if user.EnterPassword != user.ConfirmPassword {
 		errorStatus := status.New(codes.InvalidArgument, "Invalid password_confirm")
