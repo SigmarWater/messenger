@@ -7,9 +7,7 @@ import (
 	"sync"
 
 	"net/http"
-
-	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
-
+	
 	"github.com/SigmarWater/messenger/auth/internal/closer"
 	"github.com/SigmarWater/messenger/auth/internal/config"
 	"github.com/SigmarWater/messenger/auth/internal/interceptop"
