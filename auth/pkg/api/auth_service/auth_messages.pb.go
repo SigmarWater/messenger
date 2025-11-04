@@ -7,6 +7,7 @@
 package auth_service
 
 import (
+	_ "github.com/envoyproxy/protoc-gen-validate/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -420,9 +421,9 @@ var File_api_auth_service_auth_messages_proto protoreflect.FileDescriptor
 
 const file_api_auth_service_auth_messages_proto_rawDesc = "" +
 	"\n" +
-	"$api/auth_service/auth_messages.proto\x12%messenger.auth.proto.api.auth_service\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc1\x01\n" +
-	"\rCreateRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"$api/auth_service/auth_messages.proto\x12%messenger.auth.proto.api.auth_service\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x17validate/validate.proto\"\xcc\x01\n" +
+	"\rCreateRequest\x12\x1d\n" +
+	"\x04name\x18\x01 \x01(\tB\t\xfaB\x06r\x04\x10\x01\x182R\x04name\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12)\n" +
 	"\x10password_confirm\x18\x04 \x01(\tR\x0fpasswordConfirm\x12?\n" +

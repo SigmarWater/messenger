@@ -19,6 +19,11 @@ plugins:
     out: ../pkg 
     opt:
       - paths=source_relative
+  - local: ../bin/protoc-gen-validate
+    out: ../pkg 
+    opt:
+    - paths=source_relative
+    - lang=go
 inputs:
 # путь для плагинов до наших protobuf файлов относительно расположения buf.gen.yaml
 

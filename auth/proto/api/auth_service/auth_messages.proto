@@ -6,6 +6,7 @@ option go_package = "messenger/auth/pkg/api/auth_service";
 
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
 
 
 enum Role{
@@ -15,8 +16,8 @@ enum Role{
 };
 
 message CreateRequest{
-    string name = 1;
-    string email = 2; 
+    string name = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+    string email = 2;
     string password = 3;
     string password_confirm = 4;
     Role role = 5;
