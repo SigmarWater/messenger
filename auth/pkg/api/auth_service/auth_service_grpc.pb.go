@@ -20,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserAPI_Create_FullMethodName = "/messenger.auth.protobuf.api.auth_service.UserAPI/Create"
-	UserAPI_Get_FullMethodName    = "/messenger.auth.protobuf.api.auth_service.UserAPI/Get"
-	UserAPI_Update_FullMethodName = "/messenger.auth.protobuf.api.auth_service.UserAPI/Update"
-	UserAPI_Delete_FullMethodName = "/messenger.auth.protobuf.api.auth_service.UserAPI/Delete"
+	UserAPI_Create_FullMethodName = "/messenger.auth.proto.api.auth_service.UserAPI/Create"
+	UserAPI_Get_FullMethodName    = "/messenger.auth.proto.api.auth_service.UserAPI/Get"
+	UserAPI_Update_FullMethodName = "/messenger.auth.proto.api.auth_service.UserAPI/Update"
+	UserAPI_Delete_FullMethodName = "/messenger.auth.proto.api.auth_service.UserAPI/Delete"
 )
 
 // UserAPIClient is the client API for UserAPI service.
@@ -211,7 +211,7 @@ func _UserAPI_Delete_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserAPI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "messenger.auth.protobuf.api.auth_service.UserAPI",
+	ServiceName: "messenger.auth.proto.api.auth_service.UserAPI",
 	HandlerType: (*UserAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
