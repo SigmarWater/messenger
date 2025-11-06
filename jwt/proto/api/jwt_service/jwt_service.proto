@@ -1,0 +1,43 @@
+syntax = "proto3"; 
+
+package messenger.jwt.ptoto.api.jwt_service; 
+
+option go_package = "messenger/jwt/pkg/api/jwt_service";
+
+import "google/protobuf/timestamp.proto";
+
+message LoginRequest{
+    string username = 1;
+    string password = 2;
+};
+
+message LoginResponse{
+    string access_token = 1;
+    string refresh_token = 2;
+    google.protobuf.Timestamp access_token_expire_at = 3;
+    google.protobuf.Timestamp refresh_token_expire_at = 4;
+};
+
+message GetAccessTokenRequest{
+    string refresh_token = 1;
+};
+
+message GetAccessTokenResponse{
+    string access_token = 1;
+    google.protobuf.Timestamp access_token_expire_at = 2;
+};
+
+message GetRefreshTokenRequest{
+    string refresh_token = 1;
+};
+
+message GetRefreshTokenResponse{
+    string refresh_token = 1;
+    google.protobuf.Timestamp refresh_token_expire_at = 2;
+};
+
+service JWTService{
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc GetAccessToken(GetAccessTokenRequest) returns (GetAccessTokenResponse);
+    rpc GetRefreshToken(GetRefreshTokenRequest) returns (GetRefreshTokenResponse);
+};

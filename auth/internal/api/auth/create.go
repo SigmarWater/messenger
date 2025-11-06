@@ -39,7 +39,7 @@ func (i *Implementation) Create(ctx context.Context, req *pb.CreateRequest) (*pb
 
 	if err != nil {
 		log.Printf("Ошибка при добавлении user: %v\n", err)
-		return nil, err
+		return &pb.CreateResponse{Id:id}, err
 	}
 
 	log.Printf("Created user with id: %+#v\n", id)

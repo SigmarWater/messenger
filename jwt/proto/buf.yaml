@@ -1,0 +1,14 @@
+version: v2
+# Путь модуля прописывается относительно buf.yaml 
+# У нас стоит точка, следовательно , модуль - messenger/auth/proto 
+modules:
+  - path: .
+
+lint:
+  use:
+    - STANDARD
+    - COMMENT_ENUM
+    - COMMENT_MESSAGE
+  except:
+      - RPC_RESPONSE_STANDARD_NAME
+      - RPC_REQUEST_RESPONSE_UNIQUE

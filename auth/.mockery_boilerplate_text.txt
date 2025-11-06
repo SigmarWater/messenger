@@ -1,0 +1,2 @@
+// Code generated for SigmarWater service
+// © SigmarWater 2025.

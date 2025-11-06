@@ -1,0 +1,36 @@
+with-expecter: true
+
+# Вгенеривает текст в моки
+boilerplate-file: ".mockery_boilerplate_text.txt"
+
+# Дириктория, куда будут генерировать моки
+# Вместо InterfaceDir подставляется путь, где интерфейс был найден, 
+# например в папке repository 
+dir: "{{.InterfaceDir}}/mocks"
+
+#То как будет называться mock-file.  
+# mock_ + название интерфейса на который сгенерировался мок
+filename: "mock_{{.InterfaceNameSnake}}.go"
+
+# Говорит, какой будет пакет у mock-файла
+# В нашем случае у все mock файлов будет package mocks
+outpkg: "mocks"
+
+# Название структуры для фейковой реализации
+mockname: "{{.InterfaceName}}"
+
+resolve-type-alias: False
+issue-845-fix: True
+
+# Помогаем, указываем в каких дирикториях мы хотим находить интерфейсы
+# Если не указывать packages, то он будет генерировать моки на все интерфейсы, 
+# которые найдет 
+packages:
+  github.com/SigmarWater/messenger/auth/internal/service:
+    # Говорим, чтобы он находил интерфейсы, у которых есть в названии слово Service
+    config:
+      include-regex: ".*Service"
+
+  github.com/SigmarWater/messenger/auth/internal/repository:
+    config:
+      include-regex: ".*Repository"

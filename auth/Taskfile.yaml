@@ -11,6 +11,7 @@ vars:
   PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
   PROTOC_GEN_GRPC_GATEWAY_VERSION: 'v2.26.3'
   PROTOC_GEN_VALIDATE_VERSION: 'v1.2.1'
+  MOCKERY_VERSION: 'v2.53.3'
 
 
   BIN_DIR: '{{.ROOT_DIR}}/bin'
@@ -22,7 +23,7 @@ vars:
   PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
   PROTOC_GEN_GRPC_GATEWAY: '{{.BIN_DIR}}/protoc-gen-grpc-gateway'
   PROTOC_GEN_VALIDATE: '{{.BIN_DIR}}/protoc-gen-validate'
-
+  MOCKERY: "{{.BIN_DIR}}/mockery"
 
 tasks:
   install-formatters:
@@ -133,3 +134,24 @@ tasks:
       - |
         echo "🏗️ Генерируем Go код из .proto..."
         ../bin/buf.exe generate
+
+# Устанавливаем mockery
+  mockery:install:
+    desc: "Устанавливает mockery в ./bin"
+    cmds:
+      - |
+        [ -f {{.MOCKERY}} ] || {
+          echo '📦 Installing mockery...'
+          GOBIN={{.BIN_DIR}} go install github.com/vektra/mockery/v2@{{.MOCKERY_VERSION}}
+        }
+    status:
+      - test -x {{.MOCKERY}}
+# Генерирует mock
+  mockery:gen:
+    desc: "Генерирует моки интерфейсов с помощью mockery"
+    deps: [ mockery:install ]
+    # Путь нужно указывать относитьно .mockery.yaml
+    cmds:
+      - |
+        echo '🧪 Генерация моков...'
+        /bin/mockery.exe

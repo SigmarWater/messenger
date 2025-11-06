@@ -1,0 +1,36 @@
+package users
+
+import (
+	"context"
+	"testing"
+
+	"github.com/SigmarWater/messenger/auth/internal/repository/mocks"
+	"github.com/stretchr/testify/suite"
+)
+
+type ServiceSuite struct{
+	suite.Suite 
+
+	ctx context.Context
+
+	userRepository *mocks.UserRepository 
+
+	service *serv 
+}
+
+// Пожготовительные операции перед вызовом тестов
+func (s *ServiceSuite) SetupTest(){
+	s.ctx = context.Background()
+
+	s.userRepository = mocks.NewUserRepository(s.T())
+
+	s.service = NewService(s.userRepository)
+}
+
+// Если нам нужно подчистить после тестов
+func(s *ServiceSuite) TearDownTest(){}
+
+// Имя может быть любым
+func TestServiceIntegration(t *testing.T) {
+	suite.Run(t, new(ServiceSuite))
+}
