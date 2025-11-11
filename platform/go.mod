@@ -2,10 +2,12 @@ module platform
 
 go 1.25.0
 
-require google.golang.org/grpc v1.76.0
+require (
+	github.com/gomodule/redigo v1.9.3
+	google.golang.org/grpc v1.76.0
+)
 
 require (
-	github.com/gomodule/redigo v1.9.3 // indirect
 	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
