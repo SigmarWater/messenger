@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/joho/godotenv"
+	"time"
 )
 
 func Load(path string) error {
@@ -20,6 +21,14 @@ type PGConfig interface {
 	DSN() string
 }
 
-type HTTPConfig interface{
+type HTTPConfig interface {
 	Address() string
+}
+
+type CacheConfig interface {
+	Address() string
+	ConnectionTimeout() time.Duration
+	MaxIdle() int
+	IdleTimeout() time.Duration
+	CacheTTL() time.Duration
 }

@@ -1,16 +1,16 @@
-package model 
+package model
 
-import(
+import (
 	"time"
 )
 
-type UserService struct{ 
-	Id int
-	Name string 
-	Email string 
-	EnterPassword string 
+type UserService struct {
+	Id              int
+	Name            string
+	Email           string
+	EnterPassword   string
 	ConfirmPassword string
-	Role string
-	CreateAt time.Time 
-	UpdateAt time.Time
+	Role            string
+	CreateAt        time.Time
+	UpdateAt        time.Time
 }

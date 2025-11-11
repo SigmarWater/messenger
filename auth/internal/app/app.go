@@ -16,6 +16,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/SigmarWater/messenger/platform/pkg/grpc/health"
 )
 
 
@@ -113,6 +115,8 @@ func (a *app) initGRPCServer(ctx context.Context) error {
 	reflection.Register(a.grpcServer)
 
 	pb.RegisterUserAPIServer(a.grpcServer, a.serviceProvider.UserImpl(ctx))
+
+	health.RegisterServer(a.grpcServer)
 
 	return nil
 }
