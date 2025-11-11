@@ -38,11 +38,11 @@ func UserToRedisViewer(user model.UserService) modelRepo.CacheUser {
 	}
 }
 
-func RedisViewerToUser(user modelRepo.CacheUser) model.UserService {
+func RedisViewerToUser(user modelRepo.CacheUser) *model.UserService {
 	var id int64
 	id, err := strconv.ParseInt(user.UUID, 0, 64)
 	if err != nil {
-		return model.UserService{}
+		return nil
 	}
 
 	var createAt time.Time
@@ -51,7 +51,7 @@ func RedisViewerToUser(user modelRepo.CacheUser) model.UserService {
 	var updateAt time.Time
 	updateAt = time.Unix(0, user.UpdateAt)
 
-	return model.UserService{
+	return &model.UserService{
 		Id:       int(id),
 		Name:     user.Name,
 		Email:    user.Email,

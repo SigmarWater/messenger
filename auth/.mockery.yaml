@@ -33,4 +33,4 @@ packages:
 
   github.com/SigmarWater/messenger/auth/internal/repository:
     config:
-      include-regex: ".*Repository"
+      include-regex: ".*(Repository|Cache)$"

@@ -1,4 +1,4 @@
-module platform
+module github.com/SigmarWater/messenger/platform
 
 go 1.25.0
 

@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func (s *serv) Get(ctx context.Context, id int64) (model.UserService, error) {
+func (s *serv) Get(ctx context.Context, id int64) (*model.UserService, error) {
 	// Сначала пытаемся получить из кеша
 	uuid := strconv.FormatInt(id, 0)
 	userCache, err := s.cacheRepository.Get(ctx, uuid)
@@ -18,11 +18,11 @@ func (s *serv) Get(ctx context.Context, id int64) (model.UserService, error) {
 	userRepo, err := s.userRepository.GetUser(ctx, id)
 
 	if err != nil {
-		return model.UserService{}, err
+		return nil, err
 	}
 
 	// Сохраняем в кеш (игнорируем ошибки кеширования)
 	_ = s.cacheRepository.Set(ctx, uuid, *userRepo, s.cacheTTL)
 
-	return *userRepo, nil
+	return userRepo, nil
 }

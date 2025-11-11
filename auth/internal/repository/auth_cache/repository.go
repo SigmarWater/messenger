@@ -29,25 +29,25 @@ func (r *repository) getCacheKey(uuid string) string {
 	return fmt.Sprintf("%s%s", cacheKeyPrefix, uuid)
 }
 
-func (r *repository) Get(ctx context.Context, uuid string) (model.UserService, error) {
+func (r *repository) Get(ctx context.Context, uuid string) (*model.UserService, error) {
 	cacheKey := r.getCacheKey(uuid)
 
 	values, err := r.cache.HGetAll(ctx, cacheKey)
 	if err != nil {
 		if errors.Is(err, redigo.ErrNil) {
-			return model.UserService{}, model.ErrUserNotFound
+			return nil, model.ErrUserNotFound
 		}
-		return model.UserService{}, err
+		return nil, err
 	}
 
 	if len(values) == 0 {
-		return model.UserService{}, model.ErrUserNotFound
+		return nil, model.ErrUserNotFound
 	}
 
 	var user cacheModel.CacheUser
 	err = redigo.ScanStruct(values, &user)
 	if err != nil {
-		return model.UserService{}, err
+		return nil, err
 	}
 
 	return converter.RedisViewerToUser(user), nil

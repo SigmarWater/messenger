@@ -13,7 +13,7 @@ type UserRepository interface {
 }
 
 type UserCache interface {
-	Get(ctx context.Context, uuid string) (model.UserService, error)
+	Get(ctx context.Context, uuid string) (*model.UserService, error)
 	Set(ctx context.Context, uuid string, user model.UserService, ttl time.Duration) error
 	Del(ctx context.Context, uuid string) error
 }

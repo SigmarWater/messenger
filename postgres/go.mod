@@ -1,4 +1,4 @@
-module github.com/sigmarater/messenger/postgres
+module github.com/SigmarWater/messenger/postgres
 
 go 1.25.0
 
