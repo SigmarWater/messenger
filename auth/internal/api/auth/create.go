@@ -23,7 +23,7 @@ func (i *Implementation) Create(ctx context.Context, req *pb.CreateRequest) (*pb
 			FieldViolations: []*errdetails.BadRequest_FieldViolation{
 				{
 					Field:       "Password",
-					Description: fmt.Sprint("Password and Password Confirm aren't equal"),
+					Description: fmt.Sprintln("Password and Password Confirm aren't equal"),
 				},
 			},
 		})

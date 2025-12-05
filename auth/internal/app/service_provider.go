@@ -125,7 +125,7 @@ func (s *serviceProvider) CachePool(ctx context.Context) *redigo.Pool {
 			MaxIdle:     s.redisConfig.MaxIdle(),
 			IdleTimeout: s.redisConfig.IdleTimeout(),
 			DialContext: func(ctx context.Context) (redigo.Conn, error) {
-				return redigo.DialContext(ctx, "tcp", s.RedisConfig().Address())
+				return redigo.DialContext(ctx, "tcp", s.redisConfig.Address())
 			},
 		}
 	}

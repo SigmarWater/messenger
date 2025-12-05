@@ -26,7 +26,7 @@ func (c *client) getConn(ctx context.Context) (redigo.Conn, error) {
 
 	conn, err := c.pool.GetContext(ctx)
 	if err != nil {
-		log.Printf("failed to get redis connection", err.Error())
+		log.Printf("failed to get redis connection: %v", err.Error())
 		return nil, err
 	}
 
