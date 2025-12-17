@@ -16,6 +16,7 @@ const (
 	cacheKeyPrefix = "auth:user:"
 )
 
+// Кэш
 type repository struct {
 	cache cache.RedisClient
 }
